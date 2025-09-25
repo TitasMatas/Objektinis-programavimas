@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <limits>
 
 using namespace std;
 
@@ -48,26 +49,40 @@ double mediana(const vector<int>& Balai) {
 
 void ivedimas(vector<string>& vardas, vector<string>& pavarde,vector<vector<int>>& NamuDarbuBalai,vector<double>& Vidurkis, vector<double>& Mediana,int KiekisStudentu)
 {
-    int Balbai, KiekisBalu;
+    int balas, suma = 0;
 
-    for(int i = 0; i < KiekisStudentu; ++i)
-    {
+    for(int i = 0; i < KiekisStudentu; ++i) {
         cout << "Iveskite savo vardą ir pavardę: ";
         cin >> vardas[i];
         cin >> pavarde[i];
 
-        cout << "Iveskite kiek balų turite: ";
-        cin >> KiekisBalu;
+        cout << "Iveskite pažymius. Norit baigti ('Enter' du kartus): \n";
 
-        for(int j = 0; j < KiekisBalu; ++j) {
-            cout << "Iveskite " << j + 1 << " balą: ";
-            cin >> Balbai;
-            NamuDarbuBalai[i].push_back(Balbai);
-            Vidurkis[i] += Balbai;
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        string eilute;
+        int suma = 0, kiekis = 0;
+
+        while (true) {
+            cout << "Pažymys: ";
+            getline(cin, eilute);
+
+            if (eilute.empty()) break;
+
+            stringstream ss(eilute);
+            int balas;
+            if (!(ss >> balas) || balas <= 0) {
+                cout << "Neteisingas pažymys. Įveskite sveiką skaičių > 0.\n";
+                continue;
+            }
+
+            NamuDarbuBalai[i].push_back(balas);
+            suma += balas;
+            kiekis++;
         }
+
         sort(NamuDarbuBalai[i].begin(), NamuDarbuBalai[i].end());
         Mediana[i] = mediana(NamuDarbuBalai[i]);
 
-        Vidurkis[i] /= KiekisBalu;
+        Vidurkis[i] = suma / kiekis;
     }
 }

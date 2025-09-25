@@ -1,24 +1,28 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
+#include <vector>
+#include <algorithm>
 
 using namespace std;
 
 int main() {
     int Balbai, KiekisBalu, KiekisStudentu;
-    string vardas, pavarde;
-   
+    int n;
 
     cout << "Kiek studentų: ";
     cin >> KiekisStudentu;
-
-    float Galutinis[KiekisStudentu] = {0};
+    vector<string> vardas(KiekisStudentu);
+    vector<string> pavarde(KiekisStudentu);
+    vector<vector<int>> NamuDarbuBalai(KiekisStudentu);
+    vector<double> Vidurkis(KiekisStudentu);
+    vector<double> Mediana(KiekisStudentu);
 
     for(int i = 0; i < KiekisStudentu; ++i)
     {
         cout << "Iveskite savo vardą ir pavardę: ";
-        cin >> vardas;
-        cin >> pavarde;
+        cin >> vardas[i];
+        cin >> pavarde[i];
 
         cout << "Iveskite kiek balų turite: ";
         cin >> KiekisBalu;
@@ -26,17 +30,28 @@ int main() {
         for(int j = 0; j < KiekisBalu; ++j) {
             cout << "Iveskite " << j + 1 << " balą: ";
             cin >> Balbai;
-            Galutinis[i] += Balbai;
+            NamuDarbuBalai[i].push_back(Balbai);
+            Vidurkis[i] += Balbai;
         }
-        Galutinis[i] /= KiekisBalu;
+        sort(NamuDarbuBalai[i].begin(), NamuDarbuBalai[i].end());
+
+        n = NamuDarbuBalai[i].size();
+        if (n % 2 == 0) {
+            Mediana[i] = (NamuDarbuBalai[i][n/2 - 1] + NamuDarbuBalai[i][n/2]) / 2.0;
+        } else {
+            Mediana[i] = NamuDarbuBalai[i][n/2];
+        }
+
+
+        Vidurkis[i] /= KiekisBalu;
     }
 
-   
-cout << "\nVardas       Pavardė       Galutinis balas\n";
-cout << "------------------------------------------\n";
+cout << "\nVardas       Pavardė       Vidurkis   Mediana\n";
+cout << "----------------------------------------------\n";
+
 
 for (int j = 0; j < KiekisBalu; ++j) {
-    cout << setw(12) << left << vardas << setw(14) << left << pavarde << fixed << setprecision(2) << setw(6) << right << Galutinis[j] << endl;
+    cout << setw(12) << left << vardas[j] << setw(14) << left << pavarde[j] << fixed << setprecision(2) << setw(10) << right << Vidurkis[j] << setw(10) << right << Mediana[j] << endl;
 }
 
     return 0;

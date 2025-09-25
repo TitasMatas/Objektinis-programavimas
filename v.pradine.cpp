@@ -1,28 +1,44 @@
 #include <iostream>
+#include <iomanip>
+#include <string>
 
 using namespace std;
 
 int main() {
-    int Balbai, Kiekis;
+    int Balbai, KiekisBalu, KiekisStudentu;
     string vardas, pavarde;
-    int Galutinis = 0;
-    cout << "Iveskite savo vardą ir pavardę: ";
-    cin >> vardas;
-    cin >> pavarde;
-    cout << "Iveskite kiek balų turite: ";
-    cin >> Kiekis;
+   
 
-    for(int i = 0; i < Kiekis; ++i) {
-        cout << "Iveskite " << i + 1 << " balą: ";
-        cin >> Balbai;
-        Galutinis += Balbai;
+    cout << "Kiek studentų: ";
+    cin >> KiekisStudentu;
+
+    float Galutinis[KiekisStudentu] = {0};
+
+    for(int i = 0; i < KiekisStudentu; ++i)
+    {
+        cout << "Iveskite savo vardą ir pavardę: ";
+        cin >> vardas;
+        cin >> pavarde;
+
+        cout << "Iveskite kiek balų turite: ";
+        cin >> KiekisBalu;
+
+        for(int j = 0; j < KiekisBalu; ++j) {
+            cout << "Iveskite " << j + 1 << " balą: ";
+            cin >> Balbai;
+            Galutinis[i] += Balbai;
+        }
+        Galutinis[i] /= KiekisBalu;
     }
 
-    Galutinis = Galutinis / Kiekis;
+   
+cout << "\nVardas       Pavardė       Galutinis balas\n";
+cout << "------------------------------------------\n";
 
-    cout << "Vardas: " << vardas << " Pavardė: " << pavarde << " Galutinis balas: " << Galutinis << endl;
+for (int j = 0; j < KiekisBalu; ++j) {
+    cout << setw(12) << left << vardas << setw(14) << left << pavarde << fixed << setprecision(2) << setw(6) << right << Galutinis[j] << endl;
+}
 
-    
     return 0;
 }
 

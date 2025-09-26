@@ -54,7 +54,7 @@ void ivedimas(vector<vector<int>>& NamuDarbuBalai,vector<int>& Vidurkis, vector<
     int balas, suma = 0, emptyCount = 0;
     string eilute;
 
-    cout << "Iveskite pažymius. Norit baigti ('Enter' du kartus): \n";   
+    cout << "\nIveskite pažymius. Norit baigti ('Enter' du kartus): \n";   
 
     while (true) {
         cout << "Pažymys: ";
@@ -71,7 +71,7 @@ void ivedimas(vector<vector<int>>& NamuDarbuBalai,vector<int>& Vidurkis, vector<
         stringstream ss(eilute);
         int balas;
         if (!(ss >> balas) || balas <= 0 || balas > 10) {
-            cout << "\nNeteisingas pažymys. Įveskite sveiką skaičių > 0.\n";
+            cout << "\nNeteisingas pažymys. Įveskite sveiką skaičių nuo 0 iki 10.\n";
             continue;
         }
 
@@ -79,7 +79,7 @@ void ivedimas(vector<vector<int>>& NamuDarbuBalai,vector<int>& Vidurkis, vector<
     }
 
     if (NamuDarbuBalai[i].size() < 2) {
-        cout << "Reikia bent vieno namų darbo pažymio ir egzamino pažymio.\n";
+        cout << "\nReikia bent vieno namų darbo pažymio ir egzamino pažymio.\n";
         return;
     }
     
@@ -122,12 +122,12 @@ void meniu(vector<string>& vardas, vector<string>& pavarde, vector<vector<int>>&
         Vidurkis.push_back(0.0);
         Mediana.push_back(0.0);
 
-        cout << "Studentas pridėtas.\n";
+        cout << "\nStudentas pridėtas.\n";
         KiekisStudentu++;
     }
     else if (pasirinkimas == 1) {
         if (KiekisStudentu == 0) {
-            cout << "Nėra studentų. Pirmiausia pridėkite studentą.\n";
+            cout << "\nNėra studentų. Pirmiausia pridėkite studentą.\n";
         } else {
             ivedimas(NamuDarbuBalai, Vidurkis, Mediana, KiekisStudentu);
         }
@@ -145,7 +145,7 @@ void meniu(vector<string>& vardas, vector<string>& pavarde, vector<vector<int>>&
         exit(0);
     }
     else {
-        cout << "Neteisingas pasirinkimas. Bandykite dar kartą.\n";
+        cout << "\nNeteisingas pasirinkimas. Bandykite dar kartą.\n";
     }
 }
 

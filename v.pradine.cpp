@@ -6,15 +6,18 @@
 #include <limits>
 #include <cstdlib>
 #include <ctime>
+#include <fstream>
+#include <sstream>
+
 
 using namespace std;
 
 double mediana(const vector<int>& Balai);
-void ivedimas(vector<vector<int>>& NamuDarbuBalai, vector<double>& Vidurkis, vector<double>& Mediana, int KiekisStudentu);
-void meniu(vector<string>& vardas, vector<string>& pavarde, vector<vector<int>>& NamuDarbuBalai, vector<double>& Vidurkis, vector<double>& Mediana, int& KiekisStudentu);
-void duomenys_is_failo(vector<string>& vardas, vector<string>& pavarde, vector<vector<int>>& NamuDarbuBalai, vector<double>& Vidurkis, vector<double>& Mediana, int& KiekisStudentu);
-void atsitiktiniai_pazymiai(vector<vector<int>>& NamuDarbuBalai, vector<double>& Vidurkis, vector<double>& Mediana, int KiekisStudentu);
-void rezultatas(const vector<string>& vardas, const vector<string>& pavarde, const vector<double>& Vidurkis, const vector<double>& Mediana, int KiekisStudentu);
+void ivedimas(vector<vector<int>>& NamuDarbuBalai, vector<int>& Vidurkis, vector<double>& Mediana, int KiekisStudentu);
+void meniu(vector<string>& vardas, vector<string>& pavarde, vector<vector<int>>& NamuDarbuBalai, vector<int>& Vidurkis, vector<double>& Mediana, int& KiekisStudentu);
+void duomenys_is_failo(vector<string>& vardas, vector<string>& pavarde, vector<vector<int>>& NamuDarbuBalai, vector<int>& Vidurkis, vector<double>& Mediana, int& KiekisStudentu);
+void atsitiktiniai_pazymiai(vector<vector<int>>& NamuDarbuBalai, vector<int>& Vidurkis, vector<double>& Mediana, int KiekisStudentu);
+void rezultatas(const vector<string>& vardas, const vector<string>& pavarde, const vector<int>& Vidurkis, const vector<double>& Mediana, int KiekisStudentu);
 
 int main() {
     int KiekisStudentu = 0;
@@ -22,7 +25,7 @@ int main() {
     vector<string> vardas;
     vector<string> pavarde;
     vector<vector<int>> NamuDarbuBalai;
-    vector<double> Vidurkis;
+    vector<int> Vidurkis;
     vector<double> Mediana;
 
     while (true) {
@@ -43,7 +46,7 @@ double mediana(const vector<int>& Balai) {
     }
 }
 
-void ivedimas(vector<vector<int>>& NamuDarbuBalai,vector<double>& Vidurkis, vector<double>& Mediana, int KiekisStudentu){
+void ivedimas(vector<vector<int>>& NamuDarbuBalai,vector<int>& Vidurkis, vector<double>& Mediana, int KiekisStudentu){
     
     if (KiekisStudentu == 0) return;
 
@@ -86,7 +89,6 @@ void ivedimas(vector<vector<int>>& NamuDarbuBalai,vector<double>& Vidurkis, vect
 
     for (int j = 0; j < NamuDarbuBalai[i].size(); ++j) {
         suma += NamuDarbuBalai[i][j];
-        
     }
 
     Vidurkis[i] = ((suma / NamuDarbuBalai[i].size()) * 0.4) + (exam * 0.6);
@@ -95,7 +97,7 @@ void ivedimas(vector<vector<int>>& NamuDarbuBalai,vector<double>& Vidurkis, vect
     Mediana[i] = mediana(NamuDarbuBalai[i]);   
 }
 
-void meniu(vector<string>& vardas, vector<string>& pavarde, vector<vector<int>>& NamuDarbuBalai, vector<double>& Vidurkis, vector<double>& Mediana, int& KiekisStudentu){
+void meniu(vector<string>& vardas, vector<string>& pavarde, vector<vector<int>>& NamuDarbuBalai, vector<int>& Vidurkis, vector<double>& Mediana, int& KiekisStudentu){
    
     int pasirinkimas;
     cout << "\nPasirinkimai:\n"
@@ -135,7 +137,7 @@ void meniu(vector<string>& vardas, vector<string>& pavarde, vector<vector<int>>&
         atsitiktiniai_pazymiai(NamuDarbuBalai, Vidurkis, Mediana, KiekisStudentu);
     }
     else if (pasirinkimas == 3) {
-        cout << "Failo skaitymas dar neįgyvendintas.\n";
+        duomenys_is_failo(vardas, pavarde, NamuDarbuBalai, Vidurkis, Mediana, KiekisStudentu);
     }
     else if (pasirinkimas == 4) {
         rezultatas(vardas, pavarde, Vidurkis, Mediana, KiekisStudentu);
@@ -148,12 +150,60 @@ void meniu(vector<string>& vardas, vector<string>& pavarde, vector<vector<int>>&
     }
 }
 
-void duomenys_is_failo(vector<string>& vardas, vector<string>& pavarde, vector<vector<int>>& NamuDarbuBalai, vector<double>& Vidurkis, vector<double>& Mediana, int& KiekisStudentu) {
+void duomenys_is_failo(vector<string>& vardas, vector<string>& pavarde, vector<vector<int>>& NamuDarbuBalai, vector<int>& Vidurkis, vector<double>& Mediana, int& KiekisStudentu) {
    
-    cout << "Failo skaitymas dar neįgyvendintas.\n";
+    string failoVardas = "kursiokai.txt";
+    cout << "Duomenys iš failo kursiokai.txt: ";
+
+    ifstream in(failoVardas);
+    if (!in) {
+        cout << "Nepavyko atidaryti failo.\n";
+        return;
+    }
+
+    string eilute;
+    
+    while (getline(in, eilute)) {
+        stringstream ss(eilute);
+        string v, p;
+        ss >> v >> p;
+        vardas.push_back(v);
+        pavarde.push_back(p);
+
+        NamuDarbuBalai.emplace_back();
+        int i = KiekisStudentu;
+        int  suma = 0;
+        int balas;
+        
+        while (ss >> balas) {
+            NamuDarbuBalai[i].push_back(balas);
+        }
+
+        if (NamuDarbuBalai[i].size() < 2) {
+            cout << "Studentui " << v << " " << p << " trūksta pažymių.\n";
+            vardas.pop_back();
+            pavarde.pop_back();
+            NamuDarbuBalai.pop_back();
+            continue;
+        }
+
+        int exam = NamuDarbuBalai[i].back();
+        NamuDarbuBalai[i].pop_back();
+
+        for (int j = 0; j < NamuDarbuBalai[i].size(); ++j) {
+            suma += NamuDarbuBalai[i][j];        
+        }
+
+        Vidurkis.push_back(((suma / NamuDarbuBalai[i].size()) * 0.4) + (exam * 0.6));
+        sort(NamuDarbuBalai[i].begin(), NamuDarbuBalai[i].end());
+        Mediana.push_back(mediana(NamuDarbuBalai[i]));   
+
+        KiekisStudentu++;
+    }
+
 }
 
-void atsitiktiniai_pazymiai(vector<vector<int>>& NamuDarbuBalai, vector<double>& Vidurkis, vector<double>& Mediana, int KiekisStudentu) {
+void atsitiktiniai_pazymiai(vector<vector<int>>& NamuDarbuBalai, vector<int>& Vidurkis, vector<double>& Mediana, int KiekisStudentu) {
     if (KiekisStudentu == 0) return;
     
     int i = KiekisStudentu - 1;
@@ -177,7 +227,7 @@ void atsitiktiniai_pazymiai(vector<vector<int>>& NamuDarbuBalai, vector<double>&
     Mediana[i] = mediana(NamuDarbuBalai[i]);    
 }
 
-void rezultatas(const vector<string>& vardas, const vector<string>& pavarde, const vector<double>& Vidurkis, const vector<double>& Mediana, int KiekisStudentu)
+void rezultatas(const vector<string>& vardas, const vector<string>& pavarde, const vector<int>& Vidurkis, const vector<double>& Mediana, int KiekisStudentu)
 {
     cout << "\nVardas       Pavardė       Vidurkis   Mediana\n";
     cout << "----------------------------------------------\n";

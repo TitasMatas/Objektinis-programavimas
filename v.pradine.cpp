@@ -4,12 +4,16 @@
 #include <vector>
 #include <algorithm>
 #include <limits>
+#include <cstdlib>
+#include <ctime>
+
 
 using namespace std;
 
 double mediana(const vector<int>& Balai);
-void ivedimas(vector<vector<int>>& NamuDarbuBalai, vector<double>& Vidurkis, vector<double>& Mediana, int& KiekisStudentu);
+void ivedimas(vector<vector<int>>& NamuDarbuBalai, vector<double>& Vidurkis, vector<double>& Mediana, int KiekisStudentu);
 void meniu(vector<string>& vardas, vector<string>& pavarde, vector<vector<int>>& NamuDarbuBalai, vector<double>& Vidurkis, vector<double>& Mediana, int& KiekisStudentu);
+void atsitiktiniai_pazymiai(vector<vector<int>>& NamuDarbuBalai, vector<double>& Vidurkis, vector<double>& Mediana, int KiekisStudentu);
 void rezultatas(const vector<string>& vardas, const vector<string>& pavarde, const vector<double>& Vidurkis, const vector<double>& Mediana, int KiekisStudentu);
 
 int main() {
@@ -41,7 +45,7 @@ double mediana(const vector<int>& Balai) {
 
 
 
-void ivedimas(vector<vector<int>>& NamuDarbuBalai,vector<double>& Vidurkis, vector<double>& Mediana, int& KiekisStudentu){
+void ivedimas(vector<vector<int>>& NamuDarbuBalai,vector<double>& Vidurkis, vector<double>& Mediana, int KiekisStudentu){
     
     if (KiekisStudentu == 0) return;
 
@@ -90,7 +94,8 @@ void meniu(vector<string>& vardas, vector<string>& pavarde, vector<vector<int>>&
     cout << "\nPasirinkimai:\n"
          << "0 - Naujas studentas\n"
          << "1 - Įvesti pažymius ranka\n"
-         << "2 - Spausdinti rezultatus\n"
+         << "2 - Įvedami atsitiktiniai pažymiai\n"
+         << "3 - Spausdinti rezultatus\n"
          << "9 - Išeiti\n"
          << "Pasirinkimas: ";
     cin >> pasirinkimas;
@@ -119,6 +124,9 @@ void meniu(vector<string>& vardas, vector<string>& pavarde, vector<vector<int>>&
         }
     }
     else if (pasirinkimas == 2) {
+        atsitiktiniai_pazymiai(NamuDarbuBalai, Vidurkis, Mediana, KiekisStudentu);
+    }
+    else if (pasirinkimas == 3) {
         rezultatas(vardas, pavarde, Vidurkis, Mediana, KiekisStudentu);
     }
     else if (pasirinkimas == 9) {
@@ -129,6 +137,25 @@ void meniu(vector<string>& vardas, vector<string>& pavarde, vector<vector<int>>&
     }
 }
 
+void atsitiktiniai_pazymiai(vector<vector<int>>& NamuDarbuBalai, vector<double>& Vidurkis, vector<double>& Mediana, int KiekisStudentu) {
+    if (KiekisStudentu == 0) return;
+    
+    int i = KiekisStudentu - 1;
+
+    NamuDarbuBalai[i].clear();
+    int kiekis = rand() % 10 + 1;
+    int suma = 0;
+
+    for (int j = 0; j < kiekis; ++j) {
+        int balas = rand() % 10 + 1;
+        NamuDarbuBalai[i].push_back(balas);
+        suma += balas;
+    }
+
+    sort(NamuDarbuBalai[i].begin(), NamuDarbuBalai[i].end());
+    Mediana[i] = mediana(NamuDarbuBalai[i]);
+    Vidurkis[i] = suma / kiekis;
+}
 
 
 void rezultatas(const vector<string>& vardas, const vector<string>& pavarde, const vector<double>& Vidurkis, const vector<double>& Mediana, int KiekisStudentu)

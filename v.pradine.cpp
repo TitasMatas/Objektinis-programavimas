@@ -31,7 +31,6 @@ int main() {
     while (true) {
         meniu(vardas, pavarde, NamuDarbuBalai, Vidurkis, Mediana, KiekisStudentu);
     }
-
     return 0;
 }
 
@@ -71,7 +70,7 @@ void ivedimas(vector<vector<int>>& NamuDarbuBalai,vector<int>& Vidurkis, vector<
 
         stringstream ss(eilute);
         int balas;
-        if (!(ss >> balas) || balas <= 0) {
+        if (!(ss >> balas) || balas <= 0 || balas > 10) {
             cout << "\nNeteisingas pažymys. Įveskite sveiką skaičių > 0.\n";
             continue;
         }
@@ -200,7 +199,6 @@ void duomenys_is_failo(vector<string>& vardas, vector<string>& pavarde, vector<v
 
         KiekisStudentu++;
     }
-
 }
 
 void atsitiktiniai_pazymiai(vector<vector<int>>& NamuDarbuBalai, vector<int>& Vidurkis, vector<double>& Mediana, int KiekisStudentu) {

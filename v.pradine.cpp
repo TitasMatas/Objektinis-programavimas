@@ -11,8 +11,10 @@
 #include <fstream>
 #include <sstream>
 #include <tuple>
+#include <chrono>
 
 using namespace std;
+using namespace std::chrono;
 
 
 bool operator<(const Student& a, const Student& b) {
@@ -92,7 +94,7 @@ void meniu(vector<Student>& studentai, vector<vector<int>>& NamuDarbuBalai, int&
          << "0 - Naujas studentas\n"
          << "1 - Įvesti pažymius ranka\n"
          << "2 - Įvedami atsitiktiniai pažymiai\n"
-         << "3 - Įvedami duomenys iš failo\n"
+         //<< "3 - Įvedami duomenys iš failo\n"
          << "4 - Spausdinti rezultatus\n"
          << "9 - Išeiti\n"
          << "Pasirinkimas: ";
@@ -121,9 +123,9 @@ void meniu(vector<Student>& studentai, vector<vector<int>>& NamuDarbuBalai, int&
     else if (pasirinkimas == 2) {
         atsitiktiniai_pazymiai(studentai, NamuDarbuBalai, KiekisStudentu);
     }
-    else if (pasirinkimas == 3) {
-        duomenys_is_failo(studentai, NamuDarbuBalai, KiekisStudentu);
-    }
+    //else if (pasirinkimas == 3) {
+    //    duomenys_is_failo(studentai, NamuDarbuBalai, KiekisStudentu);
+    //}
     else if (pasirinkimas == 4) {
         rezultatas(studentai);
     }
@@ -135,37 +137,31 @@ void meniu(vector<Student>& studentai, vector<vector<int>>& NamuDarbuBalai, int&
     }
 }
 
-void duomenys_is_failo(vector<Student>& studentai, vector<vector<int>>& NamuDarbuBalai, int& KiekisStudentu) {
-   
-    string failoVardas;
-    cout << "Įveskite failo pavadinimą: ";
-    getline(cin, failoVardas);
+void duomenys_is_failo(vector<Student>& studentai, vector<vector<int>>& NamuDarbuBalai, int& KiekisStudentu, const string& failoVardas) {
+    auto startRead = high_resolution_clock::now();
 
     ifstream in(failoVardas);
     if (!in) {
-        cout << "Nepavyko atidaryti failo.\n";
+        cout << "Nepavyko atidaryti failo: " << failoVardas << "\n";
         return;
     }
 
     string eilute;
-    
     while (getline(in, eilute)) {
         stringstream ss(eilute);
         string v, p;
         ss >> v >> p;
-        
 
         NamuDarbuBalai.emplace_back();
         int i = KiekisStudentu;
-        int  suma = 0;
+        int suma = 0;
         int balas;
-        
+
         while (ss >> balas) {
             NamuDarbuBalai[i].push_back(balas);
         }
 
         if (NamuDarbuBalai[i].size() < 2) {
-            cout << "Studentas pozicijoje " << i << " praleistas. Nėra pažymių.\n";
             NamuDarbuBalai.pop_back();
             continue;
         }
@@ -174,17 +170,19 @@ void duomenys_is_failo(vector<Student>& studentai, vector<vector<int>>& NamuDarb
         NamuDarbuBalai[i].pop_back();
 
         for (int j = 0; j < NamuDarbuBalai[i].size(); ++j) {
-            suma += NamuDarbuBalai[i][j];        
+            suma += NamuDarbuBalai[i][j];
         }
-
 
         studentai.emplace_back(v, p, 0.0, 0.0);
         studentai[i].galutinisVid = (((suma / NamuDarbuBalai[i].size()) * 0.4) + (exam * 0.6));
         sort(NamuDarbuBalai[i].begin(), NamuDarbuBalai[i].end());
-        studentai[i].galutinisMed = (mediana(NamuDarbuBalai[i]));   
+        studentai[i].galutinisMed = mediana(NamuDarbuBalai[i]);
 
         KiekisStudentu++;
     }
+
+    auto endRead = high_resolution_clock::now();
+    cout << "Failo nuskaitymo laikas: " << duration<double>(endRead - startRead).count() << " s\n";
 }
 
 void atsitiktiniai_pazymiai(vector<Student>& studentai, vector<vector<int>>& NamuDarbuBalai, int KiekisStudentu) {
@@ -231,9 +229,10 @@ void rezultatas(const vector<Student>& studentai)
     }
 }
 
-
 void kategorijos(const vector<Student>& studentai, vector<Student>& NeTokieProtingi, vector<Student>& protingi) {
     
+    auto startSort = high_resolution_clock::now();
+
     NeTokieProtingi.clear();
     protingi.clear();
 
@@ -242,6 +241,10 @@ void kategorijos(const vector<Student>& studentai, vector<Student>& NeTokieProti
         else NeTokieProtingi.emplace_back(s);
     }
 
+    auto endSort = high_resolution_clock::now();
+    cout << "Rūšiavimo į kategorijas laikas: " << duration<double>(endSort - startSort).count() << " s\n";
+
+    auto startWrite = high_resolution_clock::now();
     ofstream outMaziau("maziau.txt");
     ofstream outProtingi("protingi.txt");
 
@@ -266,4 +269,8 @@ void kategorijos(const vector<Student>& studentai, vector<Student>& NeTokieProti
              << setw(16) << left << s.galutinisMed << endl;
     }
     outMaziau.close();
+    
+    auto endWrite = high_resolution_clock::now();
+    cout << "Įrašymo į failus laikas: " << duration<double>(endWrite - startWrite).count() << " s\n";
+
 }

@@ -12,18 +12,37 @@
 
 using namespace std;
 
-double mediana(const vector<int>& Balai);
-void ivedimas(vector<tuple<string, string, double, double>>& studentai, vector<vector<int>>& NamuDarbuBalai, int KiekisStudentu);
-void meniu(vector<tuple<string, string, double, double>>& studentai, vector<vector<int>>& NamuDarbuBalai,int& KiekisStudentu);
-void duomenys_is_failo(vector<tuple<string, string, double, double>>& studentai, vector<vector<int>>& NamuDarbuBalai, int& KiekisStudentu);
-void atsitiktiniai_pazymiai(vector<tuple<string, string, double, double>>& studentai, vector<vector<int>>& NamuDarbuBalai, int KiekisStudentu);
-void rezultatas(const vector<tuple<string, string, double, double>>& studentai);
-void kategorijos(const vector<tuple<string, string, double, double>>& studentai,vector<tuple<string, string, double, double>>&NeTokieProtingi, vector<tuple<string, string, double, double>>&protingi);
+struct Student {
+    string vardas;
+    string pavarde;
+    double galutinisVid;
+    double galutinisMed;
+
+    Student() : vardas(""), pavarde(""), galutinisVid(0), galutinisMed(0) {}
+    Student(string v, string p, double gv, double gm) : vardas(v), pavarde(p), galutinisVid(gv), galutinisMed(gm) {}
+};
+
+bool operator<(const Student& a, const Student& b) {
+    if (a.pavarde != b.pavarde)
+        return a.pavarde < b.pavarde;
+    return a.vardas < b.vardas;
+}
+
+double mediana(vector<int> Balai);
+void ivedimas(vector<Student>& studentai, vector<vector<int>>& NamuDarbuBalai, int KiekisStudentu);
+void meniu(vector<Student>& studentai, vector<vector<int>>& NamuDarbuBalai, int& KiekisStudentu);
+void duomenys_is_failo(vector<Student>& studentai, vector<vector<int>>& NamuDarbuBalai, int& KiekisStudentu);
+void atsitiktiniai_pazymiai(vector<Student>& studentai, vector<vector<int>>& NamuDarbuBalai, int KiekisStudentu);
+void rezultatas(const vector<Student>& studentai);
+void kategorijos(const vector<Student>& studentai, vector<Student>& NeTokieProtingi, vector<Student>& protingi);
+
+
 
 int main() {
     int KiekisStudentu = 0;
+    srand(time(NULL));
 
-    vector<tuple<string, string, double, double>> studentai;
+    vector<Student> studentai;
     vector<vector<int>> NamuDarbuBalai;
 
     while (true) {
@@ -32,9 +51,11 @@ int main() {
     return 0;
 }
 
-double mediana(const vector<int>& Balai) {
+double mediana(vector<int> Balai)  {
     int n = Balai.size();
     if (n == 0) return 0.0;
+
+    sort(Balai.begin(), Balai.end());
 
     if (n % 2 == 0) {
         return (Balai[n / 2 - 1] + Balai[n / 2]) / 2.0;
@@ -43,7 +64,7 @@ double mediana(const vector<int>& Balai) {
     }
 }
 
-void ivedimas(vector<tuple<string, string, double, double>>& studentai, vector<vector<int>>& NamuDarbuBalai, int KiekisStudentu){
+void ivedimas(vector<Student>& studentai, vector<vector<int>>& NamuDarbuBalai, int KiekisStudentu){
     
     if (KiekisStudentu == 0) return;
 
@@ -88,13 +109,13 @@ void ivedimas(vector<tuple<string, string, double, double>>& studentai, vector<v
         suma += NamuDarbuBalai[i][j];
     }
 
-    get<2>(studentai[i]) = ((suma / NamuDarbuBalai[i].size()) * 0.4) + (exam * 0.6);
+    studentai[i].galutinisVid = ((suma / NamuDarbuBalai[i].size()) * 0.4) + (exam * 0.6);
 
     sort(NamuDarbuBalai[i].begin(), NamuDarbuBalai[i].end());
-    get<3>(studentai[i]) = mediana(NamuDarbuBalai[i]);   
+    studentai[i].galutinisMed= mediana(NamuDarbuBalai[i]);   
 }
 
-void meniu(vector<tuple<string, string, double, double>>& studentai, vector<vector<int>>& NamuDarbuBalai,int& KiekisStudentu){
+void meniu(vector<Student>& studentai, vector<vector<int>>& NamuDarbuBalai, int& KiekisStudentu){
    
     int pasirinkimas;
     cout << "\nPasirinkimai:\n"
@@ -114,7 +135,7 @@ void meniu(vector<tuple<string, string, double, double>>& studentai, vector<vect
         getline(cin, v, ' ');
         getline(cin, p);
 
-        studentai.emplace_back(p, v, 0.0, 0.0);
+        studentai.emplace_back(v, p, 0.0, 0.0);
         NamuDarbuBalai.emplace_back();
 
         cout << "\nStudentas pridėtas.\n";
@@ -144,7 +165,7 @@ void meniu(vector<tuple<string, string, double, double>>& studentai, vector<vect
     }
 }
 
-void duomenys_is_failo(vector<tuple<string, string, double, double>>& studentai, vector<vector<int>>& NamuDarbuBalai, int& KiekisStudentu) {
+void duomenys_is_failo(vector<Student>& studentai, vector<vector<int>>& NamuDarbuBalai, int& KiekisStudentu) {
    
     string failoVardas;
     cout << "Įveskite failo pavadinimą: ";
@@ -187,16 +208,16 @@ void duomenys_is_failo(vector<tuple<string, string, double, double>>& studentai,
         }
 
 
-        studentai.emplace_back(p, v, 0.0, 0.0);
-        get<2>(studentai[i]) = (((suma / NamuDarbuBalai[i].size()) * 0.4) + (exam * 0.6));
+        studentai.emplace_back(v, p, 0.0, 0.0);
+        studentai[i].galutinisVid = (((suma / NamuDarbuBalai[i].size()) * 0.4) + (exam * 0.6));
         sort(NamuDarbuBalai[i].begin(), NamuDarbuBalai[i].end());
-        get<3>(studentai[i]) = (mediana(NamuDarbuBalai[i]));   
+        studentai[i].galutinisMed = (mediana(NamuDarbuBalai[i]));   
 
         KiekisStudentu++;
     }
 }
 
-void atsitiktiniai_pazymiai(vector<tuple<string, string, double, double>>& studentai, vector<vector<int>>& NamuDarbuBalai, int KiekisStudentu) {
+void atsitiktiniai_pazymiai(vector<Student>& studentai, vector<vector<int>>& NamuDarbuBalai, int KiekisStudentu) {
     if (KiekisStudentu == 0) return;
     
     int i = KiekisStudentu - 1;
@@ -214,47 +235,41 @@ void atsitiktiniai_pazymiai(vector<tuple<string, string, double, double>>& stude
     int egzaminas = rand() % 10 + 1;
     NamuDarbuBalai[i].push_back(egzaminas);
 
-    get<2>(studentai[i]) = ((suma / kiekis) * 0.4) + (egzaminas * 0.6);
+    studentai[i].galutinisVid = ((suma / kiekis) * 0.4) + (egzaminas * 0.6);
 
     sort(NamuDarbuBalai[i].begin(), NamuDarbuBalai[i].end());
-    get<3>(studentai[i]) = mediana(NamuDarbuBalai[i]);    
+    studentai[i].galutinisMed = mediana(NamuDarbuBalai[i]);    
 }
 
-void rezultatas(const vector<tuple<string, string, double, double>>& studentai)
+void rezultatas(const vector<Student>& studentai)
 {
     cout << "\nPavardė       Vardas        Galutinis (Vid.)   Galutinis (Med.)\n";
     cout << "----------------------------------------------------------------\n";
 
-    vector<tuple<string, string, double, double>> sorted = studentai;
+    vector<Student> sorted = studentai;
     sort(sorted.begin(), sorted.end());
 
-    
-    vector<tuple<string, string, double, double>> NeTokieProtingi;
-    vector<tuple<string, string, double, double>> protingi;
-
+    vector<Student> NeTokieProtingi, protingi;
     kategorijos(sorted, NeTokieProtingi, protingi);
 
-     for (int i = 0; i < sorted.size(); ++i) {
-        cout << setw(14) << left << get<1>(sorted[i]) 
-        << setw(14) << left << get<0>(sorted[i]) 
-        << fixed << setprecision(2) 
-        << setw(19) << left << get<2>(sorted[i]) 
-        << setw(16) << left << get<3>(sorted[i]) << endl;
+     for (const auto& s : sorted) {
+        cout << setw(14) << left << s.pavarde
+             << setw(14) << left << s.vardas
+             << fixed << setprecision(2) 
+             << setw(19) << left << s.galutinisVid
+             << setw(16) << left << s.galutinisMed << endl;
     }
 }
 
 
-void kategorijos(const vector<tuple<string, string, double, double>>& studentai, vector<tuple<string, string, double, double>>& NeTokieProtingi, vector<tuple<string, string, double, double>>& protingi) {
+void kategorijos(const vector<Student>& studentai, vector<Student>& NeTokieProtingi, vector<Student>& protingi) {
     
     NeTokieProtingi.clear();
     protingi.clear();
 
     for (const auto& s : studentai) {
-        if (get<2>(s) >= 5.0) {
-            protingi.emplace_back(s);
-        } else {
-            NeTokieProtingi.emplace_back(s);
-        }
+        if (s.galutinisVid >= 5.0)  protingi.emplace_back(s);
+        else NeTokieProtingi.emplace_back(s);
     }
 
     ofstream outMaziau("maziau.txt");
@@ -263,21 +278,22 @@ void kategorijos(const vector<tuple<string, string, double, double>>& studentai,
     outProtingi << "Pavardė       Vardas        Galutinis (Vid.)   Galutinis (Med.)\n";
     outProtingi << "----------------------------------------------------------------\n";
     for (const auto& s : protingi) {
-        outProtingi << setw(14) << left << get<1>(s)
-             << setw(14) << left << get<0>(s)
+        outProtingi << setw(14) << left << s.pavarde
+             << setw(14) << left << s.vardas
              << fixed << setprecision(2)
-             << setw(19) << left << get<2>(s)
-             << setw(16) << left << get<3>(s) << endl;
+             << setw(19) << left << s.galutinisVid
+             << setw(16) << left << s.galutinisMed << endl;
     }
     outProtingi.close();
 
-    cout << "\n--- Ne tokie protingi studentai ---\n";
+    outMaziau << "Pavardė       Vardas        Galutinis (Vid.)   Galutinis (Med.)\n";
+    outMaziau << "----------------------------------------------------------------\n";
     for (const auto& s : NeTokieProtingi) {
-        outMaziau << setw(14) << left << get<1>(s)
-             << setw(14) << left << get<0>(s)
+        outMaziau << setw(14) << left << s.pavarde
+             << setw(14) << left << s.vardas
              << fixed << setprecision(2)
-             << setw(19) << left << get<2>(s)
-             << setw(16) << left << get<3>(s) << endl;
+             << setw(19) << left << s.galutinisVid
+             << setw(16) << left << s.galutinisMed << endl;
     }
     outMaziau.close();
 }

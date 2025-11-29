@@ -1,3 +1,5 @@
+#include "functions.h"
+
 #include <iostream>
 #include <iomanip>
 #include <string>
@@ -9,31 +11,23 @@
 #include <fstream>
 #include <sstream>
 #include <tuple>
+#include <chrono>
 
 using namespace std;
+using namespace std::chrono;
 
-double mediana(const vector<int>& Balai);
-void ivedimas(vector<tuple<string, string, double, double>>& studentai, vector<vector<int>>& NamuDarbuBalai, int KiekisStudentu);
-void meniu(vector<tuple<string, string, double, double>>& studentai, vector<vector<int>>& NamuDarbuBalai,int& KiekisStudentu);
-void duomenys_is_failo(vector<tuple<string, string, double, double>>& studentai, vector<vector<int>>& NamuDarbuBalai, int& KiekisStudentu);
-void atsitiktiniai_pazymiai(vector<tuple<string, string, double, double>>& studentai, vector<vector<int>>& NamuDarbuBalai, int KiekisStudentu);
-void rezultatas(const vector<tuple<string, string, double, double>>& studentai);
 
-int main() {
-    int KiekisStudentu = 0;
-
-    vector<tuple<string, string, double, double>> studentai;
-    vector<vector<int>> NamuDarbuBalai;
-
-    while (true) {
-        meniu(studentai, NamuDarbuBalai, KiekisStudentu);
-    }
-    return 0;
+bool operator<(const Student& a, const Student& b) {
+    if (a.pavarde != b.pavarde)
+        return a.pavarde < b.pavarde;
+    return a.vardas < b.vardas;
 }
 
-double mediana(const vector<int>& Balai) {
+double mediana(vector<int> Balai)  {
     int n = Balai.size();
     if (n == 0) return 0.0;
+
+    sort(Balai.begin(), Balai.end());
 
     if (n % 2 == 0) {
         return (Balai[n / 2 - 1] + Balai[n / 2]) / 2.0;
@@ -42,7 +36,7 @@ double mediana(const vector<int>& Balai) {
     }
 }
 
-void ivedimas(vector<tuple<string, string, double, double>>& studentai, vector<vector<int>>& NamuDarbuBalai, int KiekisStudentu){
+void ivedimas(vector<Student>& studentai, vector<vector<int>>& NamuDarbuBalai, int KiekisStudentu){
     
     if (KiekisStudentu == 0) return;
 
@@ -87,20 +81,20 @@ void ivedimas(vector<tuple<string, string, double, double>>& studentai, vector<v
         suma += NamuDarbuBalai[i][j];
     }
 
-    get<2>(studentai[i]) = ((suma / NamuDarbuBalai[i].size()) * 0.4) + (exam * 0.6);
+    studentai[i].galutinisVid = ((suma / NamuDarbuBalai[i].size()) * 0.4) + (exam * 0.6);
 
     sort(NamuDarbuBalai[i].begin(), NamuDarbuBalai[i].end());
-    get<3>(studentai[i]) = mediana(NamuDarbuBalai[i]);   
+    studentai[i].galutinisMed= mediana(NamuDarbuBalai[i]);   
 }
 
-void meniu(vector<tuple<string, string, double, double>>& studentai, vector<vector<int>>& NamuDarbuBalai,int& KiekisStudentu){
+void meniu(vector<Student>& studentai, vector<vector<int>>& NamuDarbuBalai, int& KiekisStudentu){
    
     int pasirinkimas;
     cout << "\nPasirinkimai:\n"
          << "0 - Naujas studentas\n"
          << "1 - Įvesti pažymius ranka\n"
          << "2 - Įvedami atsitiktiniai pažymiai\n"
-         << "3 - Įvedami duomenys iš failo\n"
+         //<< "3 - Įvedami duomenys iš failo\n"
          << "4 - Spausdinti rezultatus\n"
          << "9 - Išeiti\n"
          << "Pasirinkimas: ";
@@ -113,7 +107,7 @@ void meniu(vector<tuple<string, string, double, double>>& studentai, vector<vect
         getline(cin, v, ' ');
         getline(cin, p);
 
-        studentai.emplace_back(p, v, 0.0, 0.0);
+        studentai.emplace_back(v, p, 0.0, 0.0);
         NamuDarbuBalai.emplace_back();
 
         cout << "\nStudentas pridėtas.\n";
@@ -129,9 +123,9 @@ void meniu(vector<tuple<string, string, double, double>>& studentai, vector<vect
     else if (pasirinkimas == 2) {
         atsitiktiniai_pazymiai(studentai, NamuDarbuBalai, KiekisStudentu);
     }
-    else if (pasirinkimas == 3) {
-        duomenys_is_failo(studentai, NamuDarbuBalai, KiekisStudentu);
-    }
+    //else if (pasirinkimas == 3) {
+    //    duomenys_is_failo(studentai, NamuDarbuBalai, KiekisStudentu);
+    //}
     else if (pasirinkimas == 4) {
         rezultatas(studentai);
     }
@@ -143,41 +137,31 @@ void meniu(vector<tuple<string, string, double, double>>& studentai, vector<vect
     }
 }
 
-void duomenys_is_failo(vector<tuple<string, string, double, double>>& studentai, vector<vector<int>>& NamuDarbuBalai, int& KiekisStudentu) {
-   
-    string failoVardas;
-    cout << "Įveskite failo pavadinimą: ";
-    getline(cin, failoVardas);
+void duomenys_is_failo(vector<Student>& studentai, vector<vector<int>>& NamuDarbuBalai, int& KiekisStudentu, const string& failoVardas) {
+    auto startRead = high_resolution_clock::now();
 
     ifstream in(failoVardas);
     if (!in) {
-        cout << "Nepavyko atidaryti failo.\n";
+        cout << "Nepavyko atidaryti failo: " << failoVardas << "\n";
         return;
     }
 
     string eilute;
-    
     while (getline(in, eilute)) {
         stringstream ss(eilute);
         string v, p;
         ss >> v >> p;
-        
 
         NamuDarbuBalai.emplace_back();
         int i = KiekisStudentu;
-        int  suma = 0;
+        int suma = 0;
         int balas;
-        
+
         while (ss >> balas) {
             NamuDarbuBalai[i].push_back(balas);
         }
 
         if (NamuDarbuBalai[i].size() < 2) {
-<<<<<<< HEAD
-            cout << "Studentas pozicijoje " << i << " praleistas. Nėra pažymių.\n";
-=======
-            cout << "Studentui " << v << " " << p << " trūksta pažymių.\n";
->>>>>>> 9c02a71e09a61f4bdd688ecaf4469d96216ad556
             NamuDarbuBalai.pop_back();
             continue;
         }
@@ -186,20 +170,22 @@ void duomenys_is_failo(vector<tuple<string, string, double, double>>& studentai,
         NamuDarbuBalai[i].pop_back();
 
         for (int j = 0; j < NamuDarbuBalai[i].size(); ++j) {
-            suma += NamuDarbuBalai[i][j];        
+            suma += NamuDarbuBalai[i][j];
         }
 
-
-        studentai.emplace_back(p, v, 0.0, 0.0);
-        get<2>(studentai[i]) = (((suma / NamuDarbuBalai[i].size()) * 0.4) + (exam * 0.6));
+        studentai.emplace_back(v, p, 0.0, 0.0);
+        studentai[i].galutinisVid = (((suma / NamuDarbuBalai[i].size()) * 0.4) + (exam * 0.6));
         sort(NamuDarbuBalai[i].begin(), NamuDarbuBalai[i].end());
-        get<3>(studentai[i]) = (mediana(NamuDarbuBalai[i]));   
+        studentai[i].galutinisMed = mediana(NamuDarbuBalai[i]);
 
         KiekisStudentu++;
     }
+
+    auto endRead = high_resolution_clock::now();
+    cout << "Failo nuskaitymo laikas: " << duration<double>(endRead - startRead).count() << " s\n";
 }
 
-void atsitiktiniai_pazymiai(vector<tuple<string, string, double, double>>& studentai, vector<vector<int>>& NamuDarbuBalai, int KiekisStudentu) {
+void atsitiktiniai_pazymiai(vector<Student>& studentai, vector<vector<int>>& NamuDarbuBalai, int KiekisStudentu) {
     if (KiekisStudentu == 0) return;
     
     int i = KiekisStudentu - 1;
@@ -217,25 +203,74 @@ void atsitiktiniai_pazymiai(vector<tuple<string, string, double, double>>& stude
     int egzaminas = rand() % 10 + 1;
     NamuDarbuBalai[i].push_back(egzaminas);
 
-    get<2>(studentai[i]) = ((suma / kiekis) * 0.4) + (egzaminas * 0.6);
+    studentai[i].galutinisVid = ((suma / kiekis) * 0.4) + (egzaminas * 0.6);
 
     sort(NamuDarbuBalai[i].begin(), NamuDarbuBalai[i].end());
-    get<3>(studentai[i]) = mediana(NamuDarbuBalai[i]);    
+    studentai[i].galutinisMed = mediana(NamuDarbuBalai[i]);    
 }
 
-void rezultatas(const vector<tuple<string, string, double, double>>& studentai)
+void rezultatas(const vector<Student>& studentai)
 {
     cout << "\nPavardė       Vardas        Galutinis (Vid.)   Galutinis (Med.)\n";
     cout << "----------------------------------------------------------------\n";
 
-    vector<tuple<string, string, double, double>> sorted = studentai;
+    vector<Student> sorted = studentai;
     sort(sorted.begin(), sorted.end());
 
-    for (int i = 0; i < sorted.size(); ++i) {
-<<<<<<< HEAD
-        cout << setw(14) << left << get<1>(sorted[i]) << setw(14) << left << get<0>(sorted[i]) << fixed << setprecision(2) << setw(19) << left << get<2>(sorted[i]) << setw(16) << left << get<3>(sorted[i]) << endl;
-=======
-        cout << setw(14) << left << get<1>(sorted[i]) << setw(14) << left << get<0>(sorted[i]) << fixed << setprecision(2) << setw(19) << right << get<2>(sorted[i]) << setw(16) << right << get<3>(sorted[i]) << endl;
->>>>>>> 9c02a71e09a61f4bdd688ecaf4469d96216ad556
+    vector<Student> NeTokieProtingi, protingi;
+    kategorijos(sorted, NeTokieProtingi, protingi);
+
+     for (const auto& s : sorted) {
+        cout << setw(14) << left << s.pavarde
+             << setw(14) << left << s.vardas
+             << fixed << setprecision(2) 
+             << setw(19) << left << s.galutinisVid
+             << setw(16) << left << s.galutinisMed << endl;
     }
+}
+
+void kategorijos(const vector<Student>& studentai, vector<Student>& NeTokieProtingi, vector<Student>& protingi) {
+    
+    auto startSort = high_resolution_clock::now();
+
+    NeTokieProtingi.clear();
+    protingi.clear();
+
+    for (const auto& s : studentai) {
+        if (s.galutinisVid >= 5.0)  protingi.emplace_back(s);
+        else NeTokieProtingi.emplace_back(s);
+    }
+
+    auto endSort = high_resolution_clock::now();
+    cout << "Rūšiavimo į kategorijas laikas: " << duration<double>(endSort - startSort).count() << " s\n";
+
+    auto startWrite = high_resolution_clock::now();
+    ofstream outMaziau("maziau.txt");
+    ofstream outProtingi("protingi.txt");
+
+    outProtingi << "Pavardė       Vardas        Galutinis (Vid.)   Galutinis (Med.)\n";
+    outProtingi << "----------------------------------------------------------------\n";
+    for (const auto& s : protingi) {
+        outProtingi << setw(14) << left << s.pavarde
+             << setw(14) << left << s.vardas
+             << fixed << setprecision(2)
+             << setw(19) << left << s.galutinisVid
+             << setw(16) << left << s.galutinisMed << endl;
+    }
+    outProtingi.close();
+
+    outMaziau << "Pavardė       Vardas        Galutinis (Vid.)   Galutinis (Med.)\n";
+    outMaziau << "----------------------------------------------------------------\n";
+    for (const auto& s : NeTokieProtingi) {
+        outMaziau << setw(14) << left << s.pavarde
+             << setw(14) << left << s.vardas
+             << fixed << setprecision(2)
+             << setw(19) << left << s.galutinisVid
+             << setw(16) << left << s.galutinisMed << endl;
+    }
+    outMaziau.close();
+    
+    auto endWrite = high_resolution_clock::now();
+    cout << "Įrašymo į failus laikas: " << duration<double>(endWrite - startWrite).count() << " s\n";
+
 }

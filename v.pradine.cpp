@@ -18,6 +18,7 @@ void meniu(vector<tuple<string, string, double, double>>& studentai, vector<vect
 void duomenys_is_failo(vector<tuple<string, string, double, double>>& studentai, vector<vector<int>>& NamuDarbuBalai, int& KiekisStudentu);
 void atsitiktiniai_pazymiai(vector<tuple<string, string, double, double>>& studentai, vector<vector<int>>& NamuDarbuBalai, int KiekisStudentu);
 void rezultatas(const vector<tuple<string, string, double, double>>& studentai);
+void kategorijos(const vector<tuple<string, string, double, double>>& studentai,vector<tuple<string, string, double, double>>&NeTokieProtingi, vector<tuple<string, string, double, double>>&protingi);
 
 int main() {
     int KiekisStudentu = 0;
@@ -173,11 +174,7 @@ void duomenys_is_failo(vector<tuple<string, string, double, double>>& studentai,
         }
 
         if (NamuDarbuBalai[i].size() < 2) {
-<<<<<<< HEAD
             cout << "Studentas pozicijoje " << i << " praleistas. Nėra pažymių.\n";
-=======
-            cout << "Studentui " << v << " " << p << " trūksta pažymių.\n";
->>>>>>> 9c02a71e09a61f4bdd688ecaf4469d96216ad556
             NamuDarbuBalai.pop_back();
             continue;
         }
@@ -231,11 +228,47 @@ void rezultatas(const vector<tuple<string, string, double, double>>& studentai)
     vector<tuple<string, string, double, double>> sorted = studentai;
     sort(sorted.begin(), sorted.end());
 
-    for (int i = 0; i < sorted.size(); ++i) {
-<<<<<<< HEAD
-        cout << setw(14) << left << get<1>(sorted[i]) << setw(14) << left << get<0>(sorted[i]) << fixed << setprecision(2) << setw(19) << left << get<2>(sorted[i]) << setw(16) << left << get<3>(sorted[i]) << endl;
-=======
-        cout << setw(14) << left << get<1>(sorted[i]) << setw(14) << left << get<0>(sorted[i]) << fixed << setprecision(2) << setw(19) << right << get<2>(sorted[i]) << setw(16) << right << get<3>(sorted[i]) << endl;
->>>>>>> 9c02a71e09a61f4bdd688ecaf4469d96216ad556
+    
+    vector<tuple<string, string, double, double>> NeTokieProtingi;
+    vector<tuple<string, string, double, double>> protingi;
+
+    kategorijos(sorted, NeTokieProtingi, protingi);
+
+
+    //for (int i = 0; i < sorted.size(); ++i) {
+      //  cout << setw(14) << left << get<1>(sorted[i]) << setw(14) << left << get<0>(sorted[i]) << fixed << setprecision(2) << setw(19) << left << get<2>(sorted[i]) << setw(16) << left << get<3>(sorted[i]) << endl;
+    //}
+}
+
+
+void kategorijos(const vector<tuple<string, string, double, double>>& studentai, vector<tuple<string, string, double, double>>& NeTokieProtingi, vector<tuple<string, string, double, double>>& protingi) {
+    
+    NeTokieProtingi.clear();
+    protingi.clear();
+
+    for (const auto& s : studentai) {
+        if (get<2>(s) >= 5.0) {
+            protingi.emplace_back(s);
+        } else {
+            NeTokieProtingi.emplace_back(s);
+        }
+    }
+
+    cout << "\n--- Protingi studentai ---\n";
+    for (const auto& s : protingi) {
+        cout << setw(14) << left << get<1>(s)
+             << setw(14) << left << get<0>(s)
+             << fixed << setprecision(2)
+             << setw(19) << left << get<2>(s)
+             << setw(16) << left << get<3>(s) << endl;
+    }
+
+    cout << "\n--- Ne tokie protingi studentai ---\n";
+    for (const auto& s : NeTokieProtingi) {
+        cout << setw(14) << left << get<1>(s)
+             << setw(14) << left << get<0>(s)
+             << fixed << setprecision(2)
+             << setw(19) << left << get<2>(s)
+             << setw(16) << left << get<3>(s) << endl;
     }
 }

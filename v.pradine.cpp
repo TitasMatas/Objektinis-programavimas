@@ -1,3 +1,5 @@
+#include "functions.h"
+
 #include <iostream>
 #include <iomanip>
 #include <string>
@@ -12,43 +14,11 @@
 
 using namespace std;
 
-struct Student {
-    string vardas;
-    string pavarde;
-    double galutinisVid;
-    double galutinisMed;
-
-    Student() : vardas(""), pavarde(""), galutinisVid(0), galutinisMed(0) {}
-    Student(string v, string p, double gv, double gm) : vardas(v), pavarde(p), galutinisVid(gv), galutinisMed(gm) {}
-};
 
 bool operator<(const Student& a, const Student& b) {
     if (a.pavarde != b.pavarde)
         return a.pavarde < b.pavarde;
     return a.vardas < b.vardas;
-}
-
-double mediana(vector<int> Balai);
-void ivedimas(vector<Student>& studentai, vector<vector<int>>& NamuDarbuBalai, int KiekisStudentu);
-void meniu(vector<Student>& studentai, vector<vector<int>>& NamuDarbuBalai, int& KiekisStudentu);
-void duomenys_is_failo(vector<Student>& studentai, vector<vector<int>>& NamuDarbuBalai, int& KiekisStudentu);
-void atsitiktiniai_pazymiai(vector<Student>& studentai, vector<vector<int>>& NamuDarbuBalai, int KiekisStudentu);
-void rezultatas(const vector<Student>& studentai);
-void kategorijos(const vector<Student>& studentai, vector<Student>& NeTokieProtingi, vector<Student>& protingi);
-
-
-
-int main() {
-    int KiekisStudentu = 0;
-    srand(time(NULL));
-
-    vector<Student> studentai;
-    vector<vector<int>> NamuDarbuBalai;
-
-    while (true) {
-        meniu(studentai, NamuDarbuBalai, KiekisStudentu);
-    }
-    return 0;
 }
 
 double mediana(vector<int> Balai)  {

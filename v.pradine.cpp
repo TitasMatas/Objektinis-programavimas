@@ -234,10 +234,13 @@ void rezultatas(const vector<tuple<string, string, double, double>>& studentai)
 
     kategorijos(sorted, NeTokieProtingi, protingi);
 
-
-    //for (int i = 0; i < sorted.size(); ++i) {
-      //  cout << setw(14) << left << get<1>(sorted[i]) << setw(14) << left << get<0>(sorted[i]) << fixed << setprecision(2) << setw(19) << left << get<2>(sorted[i]) << setw(16) << left << get<3>(sorted[i]) << endl;
-    //}
+     for (int i = 0; i < sorted.size(); ++i) {
+        cout << setw(14) << left << get<1>(sorted[i]) 
+        << setw(14) << left << get<0>(sorted[i]) 
+        << fixed << setprecision(2) 
+        << setw(19) << left << get<2>(sorted[i]) 
+        << setw(16) << left << get<3>(sorted[i]) << endl;
+    }
 }
 
 
@@ -254,21 +257,27 @@ void kategorijos(const vector<tuple<string, string, double, double>>& studentai,
         }
     }
 
-    cout << "\n--- Protingi studentai ---\n";
+    ofstream outMaziau("maziau.txt");
+    ofstream outProtingi("protingi.txt");
+
+    outProtingi << "Pavardė       Vardas        Galutinis (Vid.)   Galutinis (Med.)\n";
+    outProtingi << "----------------------------------------------------------------\n";
     for (const auto& s : protingi) {
-        cout << setw(14) << left << get<1>(s)
+        outProtingi << setw(14) << left << get<1>(s)
              << setw(14) << left << get<0>(s)
              << fixed << setprecision(2)
              << setw(19) << left << get<2>(s)
              << setw(16) << left << get<3>(s) << endl;
     }
+    outProtingi.close();
 
     cout << "\n--- Ne tokie protingi studentai ---\n";
     for (const auto& s : NeTokieProtingi) {
-        cout << setw(14) << left << get<1>(s)
+        outMaziau << setw(14) << left << get<1>(s)
              << setw(14) << left << get<0>(s)
              << fixed << setprecision(2)
              << setw(19) << left << get<2>(s)
              << setw(16) << left << get<3>(s) << endl;
     }
+    outMaziau.close();
 }

@@ -69,6 +69,8 @@ void ivedimas(list<Student>& studentai, list<list<int>>& NamuDarbuBalai, int Kie
     std::advance(itStudent, KiekisStudentu - 1);
     std::advance(itBalai, KiekisStudentu - 1);
 
+    cout << "\nStudento pažymių konteinerio adresas atmintyje: " << &(*itBalai) << "\n";
+
     int EmptyCount = 0, balas;
     string eilute;
 

@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <chrono>
 #include <iostream>
+#include <list>
 using namespace std;
 using namespace std::chrono;
 
@@ -21,9 +22,9 @@ int main() {
         cout << "\nTestuojamas failas: " << file << "\n";
 
         int KiekisStudentu = 0;
-        vector<Student> studentai;
-        vector<vector<int>> NamuDarbuBalai;
-        vector<Student> NeTokieProtingi, protingi;
+        list<Student> studentai;
+        list<list<int>> NamuDarbuBalai;
+        list<Student> NeTokieProtingi, protingi;
 
         auto startTotal = high_resolution_clock::now();
 

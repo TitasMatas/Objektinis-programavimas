@@ -2,7 +2,7 @@
 #define STUDENT_H
 
 #include <string>
-#include <vector>
+#include <list>
 
 struct Student {
     std::string vardas;

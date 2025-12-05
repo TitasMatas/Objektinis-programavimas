@@ -36,15 +36,27 @@ Programa automatiškai testuoja visus 5 failus ir išveda laikus kiekvienam žin
 
 ---
 
-## Spartos analizės rezultatai
+## Spartos analizės rezultatai (list konteineris)
 
 | Failas              | Nuskaitymas (s) | Rūšiavimas (s) | Įrašymas (s) | Bendras laikas (s) |
-|----------------------|-----------------|-----------------|--------------|----------------------|
-| studentai10.txt      | 0.000387       | 0.0000041       | 0.0032546    | 0.0062417           |
-| studentai100.txt     | 0.0006264      | 0.0000286       | 0.0036587    | 0.0066728           |
-| studentai1000.txt    | 0.0047477      | 0.0002817       | 0.0215964    | 0.0291042           |
-| studentai10000.txt   | 0.0471313      | 0.0031111       | 0.194292     | 0.249615            |
-| studentai100000.txt  | 0.539877       | 0.0297988       | 1.53576      | 2.11343             |
+| ------------------- | --------------- | -------------- | ------------ | ------------------ |
+| studentai10.txt     | 0.000421        | 0.015190       | 0.003641     | 0.023598           |
+| studentai100.txt    | 0.001104        | 0.000088       | 0.005448     | 0.009962           |
+| studentai1000.txt   | 0.007286        | 0.000833       | 0.026106     | 0.039963           |
+| studentai10000.txt  | 0.129223        | 0.003643       | 0.232335     | 0.368637           |
+| studentai100000.txt | 1.212290        | 0.052461       | 2.137380     | 3.407940           |
 
 ## Pastabos
 - Naudojama `setlocale(LC_ALL, "")` dėl lietuviškų simbolių.
+
+
+---
+
+## Testavimo sistemos parametrai
+
+| Parametras        | Reikšmė |
+|------------------|----------|
+| CPU               | 11th Gen Intel(R) Core(TM) i5-1145G7 @ 2.60GHz |
+| RAM               | 16 GB DDR4 |
+| HDD / SSD         | NVMe SSD (model not specified) |
+| OS                | Windows 11 Enterprise x64 (Build 22631.6199) |

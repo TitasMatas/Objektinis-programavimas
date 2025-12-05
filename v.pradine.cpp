@@ -12,6 +12,7 @@
 #include <sstream>
 #include <tuple>
 #include <chrono>
+#include <list>
 
 using namespace std;
 using namespace std::chrono;
@@ -23,26 +24,54 @@ bool operator<(const Student& a, const Student& b) {
     return a.vardas < b.vardas;
 }
 
-double mediana(vector<int> Balai)  {
-    int n = Balai.size();
-    if (n == 0) return 0.0;
+double mediana(std::list<int>& balai) {
+    if (balai.empty()) return 0;
 
-    sort(Balai.begin(), Balai.end());
+    balai.sort();
 
-    if (n % 2 == 0) {
-        return (Balai[n / 2 - 1] + Balai[n / 2]) / 2.0;
+    size_t n = balai.size();
+    auto it = balai.begin();
+
+    if (n % 2 == 1) {
+        std::advance(it, n / 2);
+        return *it;
     } else {
-        return Balai[n / 2];
+        auto it2 = it;
+        std::advance(it,  n/2 - 1);
+        std::advance(it2, n/2);
+        return (*it + *it2) / 2.0;
     }
 }
 
-void ivedimas(vector<Student>& studentai, vector<vector<int>>& NamuDarbuBalai, int KiekisStudentu){
+double skaiciuoti_galutini(Student& student, std::list<int>& balai) {
+    if (balai.size() < 2) return 0.0;
+
+    int exam = balai.back();
+    balai.pop_back();
+
+    int suma = 0;
+    for (int b : balai) suma += b;
+
+    student.galutinisVid = ((suma / (double)balai.size()) * 0.4) + (exam * 0.6);
+
+    balai.sort();
+    student.galutinisMed = mediana(balai);
+
+    return student.galutinisVid;
+}
+
+void ivedimas(list<Student>& studentai, list<list<int>>& NamuDarbuBalai, int KiekisStudentu){
     
     if (KiekisStudentu == 0) return;
 
-    int i = KiekisStudentu - 1;
+    auto itStudent = studentai.begin();
+    auto itBalai = NamuDarbuBalai.begin();
+    std::advance(itStudent, KiekisStudentu - 1);
+    std::advance(itBalai, KiekisStudentu - 1);
 
-    int balas, suma = 0, EmptyCount = 0;
+    cout << "\nStudento pažymių konteinerio adresas atmintyje: " << &(*itBalai) << "\n";
+
+    int EmptyCount = 0, balas;
     string eilute;
 
     cout << "\nĮveskite pažymius. Norit baigti ('Enter' du kartus): \n";   
@@ -66,78 +95,19 @@ void ivedimas(vector<Student>& studentai, vector<vector<int>>& NamuDarbuBalai, i
             continue;
         }
 
-        NamuDarbuBalai[i].push_back(balas);
+        itBalai->push_back(balas);
     }
 
-    if (NamuDarbuBalai[i].size() < 2) {
+    if (itBalai->size() < 2) {
         cout << "\nReikia bent vieno namų darbo pažymio ir egzamino pažymio.\n";
         return;
     }
     
-    int exam = NamuDarbuBalai[i].back();
-    NamuDarbuBalai[i].pop_back();
-
-    for (int j = 0; j < NamuDarbuBalai[i].size(); ++j) {
-        suma += NamuDarbuBalai[i][j];
-    }
-
-    studentai[i].galutinisVid = ((suma / NamuDarbuBalai[i].size()) * 0.4) + (exam * 0.6);
-
-    sort(NamuDarbuBalai[i].begin(), NamuDarbuBalai[i].end());
-    studentai[i].galutinisMed= mediana(NamuDarbuBalai[i]);   
+    skaiciuoti_galutini(*itStudent, *itBalai); 
 }
 
-void meniu(vector<Student>& studentai, vector<vector<int>>& NamuDarbuBalai, int& KiekisStudentu){
-   
-    int pasirinkimas;
-    cout << "\nPasirinkimai:\n"
-         << "0 - Naujas studentas\n"
-         << "1 - Įvesti pažymius ranka\n"
-         << "2 - Įvedami atsitiktiniai pažymiai\n"
-         //<< "3 - Įvedami duomenys iš failo\n"
-         << "4 - Spausdinti rezultatus\n"
-         << "9 - Išeiti\n"
-         << "Pasirinkimas: ";
-    cin >> pasirinkimas;
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-    if (pasirinkimas == 0) {
-        string v, p;
-        cout << "\nĮveskite vardą ir pavardę: ";
-        getline(cin, v, ' ');
-        getline(cin, p);
-
-        studentai.emplace_back(v, p, 0.0, 0.0);
-        NamuDarbuBalai.emplace_back();
-
-        cout << "\nStudentas pridėtas.\n";
-        KiekisStudentu++;
-    }
-    else if (pasirinkimas == 1) {
-        if (KiekisStudentu == 0) {
-            cout << "\nNėra studentų. Pirmiausia pridėkite studentą.\n";
-        } else {
-            ivedimas(studentai, NamuDarbuBalai, KiekisStudentu);
-        }
-    }
-    else if (pasirinkimas == 2) {
-        atsitiktiniai_pazymiai(studentai, NamuDarbuBalai, KiekisStudentu);
-    }
-    //else if (pasirinkimas == 3) {
-    //    duomenys_is_failo(studentai, NamuDarbuBalai, KiekisStudentu);
-    //}
-    else if (pasirinkimas == 4) {
-        rezultatas(studentai);
-    }
-    else if (pasirinkimas == 9) {
-        exit(0);
-    }
-    else {
-        cout << "\nNeteisingas pasirinkimas. Bandykite dar kartą.\n";
-    }
-}
-
-void duomenys_is_failo(vector<Student>& studentai, vector<vector<int>>& NamuDarbuBalai, int& KiekisStudentu, const string& failoVardas) {
+void duomenys_is_failo(list<Student>& studentai, list<list<int>>& NamuDarbuBalai, int& KiekisStudentu, const string& failoVardas) {
     auto startRead = high_resolution_clock::now();
 
     ifstream in(failoVardas);
@@ -153,31 +123,21 @@ void duomenys_is_failo(vector<Student>& studentai, vector<vector<int>>& NamuDarb
         ss >> v >> p;
 
         NamuDarbuBalai.emplace_back();
-        int i = KiekisStudentu;
-        int suma = 0;
+        auto balaiIt = prev(NamuDarbuBalai.end());
         int balas;
 
-        while (ss >> balas) {
-            NamuDarbuBalai[i].push_back(balas);
-        }
+        studentai.emplace_back(v, p, 0.0, 0.0);
+        auto studentIt = prev(studentai.end());
 
-        if (NamuDarbuBalai[i].size() < 2) {
+        while (ss >> balas) balaiIt->push_back(balas);
+
+        if (balaiIt->size() < 2) {
             NamuDarbuBalai.pop_back();
+            studentai.pop_back();
             continue;
         }
 
-        int exam = NamuDarbuBalai[i].back();
-        NamuDarbuBalai[i].pop_back();
-
-        for (int j = 0; j < NamuDarbuBalai[i].size(); ++j) {
-            suma += NamuDarbuBalai[i][j];
-        }
-
-        studentai.emplace_back(v, p, 0.0, 0.0);
-        studentai[i].galutinisVid = (((suma / NamuDarbuBalai[i].size()) * 0.4) + (exam * 0.6));
-        sort(NamuDarbuBalai[i].begin(), NamuDarbuBalai[i].end());
-        studentai[i].galutinisMed = mediana(NamuDarbuBalai[i]);
-
+        skaiciuoti_galutini(*studentIt, *balaiIt);
         KiekisStudentu++;
     }
 
@@ -185,39 +145,43 @@ void duomenys_is_failo(vector<Student>& studentai, vector<vector<int>>& NamuDarb
     cout << "Failo nuskaitymo laikas: " << duration<double>(endRead - startRead).count() << " s\n";
 }
 
-void atsitiktiniai_pazymiai(vector<Student>& studentai, vector<vector<int>>& NamuDarbuBalai, int KiekisStudentu) {
+void atsitiktiniai_pazymiai(list<Student>& studentai, list<list<int>>& NamuDarbuBalai, int KiekisStudentu) {
     if (KiekisStudentu == 0) return;
     
-    int i = KiekisStudentu - 1;
+    auto itStudent = studentai.begin();
+    auto itBalai   = NamuDarbuBalai.begin();
+    advance(itStudent, KiekisStudentu - 1);
+    advance(itBalai,   KiekisStudentu - 1);
 
-    NamuDarbuBalai[i].clear();
+    itBalai->clear();
+
     int kiekis = rand() % 10 + 1;
     int suma = 0;
 
     for (int j = 0; j < kiekis; ++j) {
         int balas = rand() % 10 + 1;
-        NamuDarbuBalai[i].push_back(balas);
+        itBalai->push_back(balas);
         suma += balas;
     }
 
     int egzaminas = rand() % 10 + 1;
-    NamuDarbuBalai[i].push_back(egzaminas);
+    itBalai->push_back(egzaminas);
 
-    studentai[i].galutinisVid = ((suma / kiekis) * 0.4) + (egzaminas * 0.6);
-
-    sort(NamuDarbuBalai[i].begin(), NamuDarbuBalai[i].end());
-    studentai[i].galutinisMed = mediana(NamuDarbuBalai[i]);    
+    skaiciuoti_galutini(*itStudent, *itBalai);
 }
 
-void rezultatas(const vector<Student>& studentai)
+void rezultatas(const list<Student>& studentai)
 {
     cout << "\nPavardė       Vardas        Galutinis (Vid.)   Galutinis (Med.)\n";
     cout << "----------------------------------------------------------------\n";
 
-    vector<Student> sorted = studentai;
-    sort(sorted.begin(), sorted.end());
+    list<Student> sorted = studentai;
+    sorted.sort([](const Student& a, const Student& b) {
+        if (a.pavarde != b.pavarde) return a.pavarde < b.pavarde;
+        else return a.vardas < b.vardas;
+    });
 
-    vector<Student> NeTokieProtingi, protingi;
+    list<Student> NeTokieProtingi, protingi;
     kategorijos(sorted, NeTokieProtingi, protingi);
 
      for (const auto& s : sorted) {
@@ -229,7 +193,7 @@ void rezultatas(const vector<Student>& studentai)
     }
 }
 
-void kategorijos(const vector<Student>& studentai, vector<Student>& NeTokieProtingi, vector<Student>& protingi) {
+void kategorijos(const list<Student>& studentai, list<Student>& NeTokieProtingi, list<Student>& protingi) {
     
     auto startSort = high_resolution_clock::now();
 
@@ -237,8 +201,8 @@ void kategorijos(const vector<Student>& studentai, vector<Student>& NeTokieProti
     protingi.clear();
 
     for (const auto& s : studentai) {
-        if (s.galutinisVid >= 5.0)  protingi.emplace_back(s);
-        else NeTokieProtingi.emplace_back(s);
+        if (s.galutinisVid >= 5.0)  protingi.push_back(s);
+        else NeTokieProtingi.push_back(s);
     }
 
     auto endSort = high_resolution_clock::now();

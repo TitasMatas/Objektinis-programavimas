@@ -104,55 +104,6 @@ void ivedimas(list<Student>& studentai, list<list<int>>& NamuDarbuBalai, int Kie
     skaiciuoti_galutini(*itStudent, *itBalai); 
 }
 
-void meniu(list<Student>& studentai, list<list<int>>& NamuDarbuBalai, int& KiekisStudentu){
-   
-    int pasirinkimas;
-    cout << "\nPasirinkimai:\n"
-         << "0 - Naujas studentas\n"
-         << "1 - Įvesti pažymius ranka\n"
-         << "2 - Įvedami atsitiktiniai pažymiai\n"
-         //<< "3 - Įvedami duomenys iš failo\n"
-         << "4 - Spausdinti rezultatus\n"
-         << "9 - Išeiti\n"
-         << "Pasirinkimas: ";
-    cin >> pasirinkimas;
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-    if (pasirinkimas == 0) {
-        string v, p;
-        cout << "\nĮveskite vardą ir pavardę: ";
-        getline(cin, v, ' ');
-        getline(cin, p);
-
-        studentai.emplace_back(v, p, 0.0, 0.0);
-        NamuDarbuBalai.emplace_back();
-
-        cout << "\nStudentas pridėtas.\n";
-        KiekisStudentu++;
-    }
-    else if (pasirinkimas == 1) {
-        if (KiekisStudentu == 0) {
-            cout << "\nNėra studentų. Pirmiausia pridėkite studentą.\n";
-        } else {
-            ivedimas(studentai, NamuDarbuBalai, KiekisStudentu);
-        }
-    }
-    else if (pasirinkimas == 2) {
-        atsitiktiniai_pazymiai(studentai, NamuDarbuBalai, KiekisStudentu);
-    }
-    //else if (pasirinkimas == 3) {
-    //    duomenys_is_failo(studentai, NamuDarbuBalai, KiekisStudentu);
-    //}
-    else if (pasirinkimas == 4) {
-        rezultatas(studentai);
-    }
-    else if (pasirinkimas == 9) {
-        exit(0);
-    }
-    else {
-        cout << "\nNeteisingas pasirinkimas. Bandykite dar kartą.\n";
-    }
-}
 
 void duomenys_is_failo(list<Student>& studentai, list<list<int>>& NamuDarbuBalai, int& KiekisStudentu, const string& failoVardas) {
     auto startRead = high_resolution_clock::now();

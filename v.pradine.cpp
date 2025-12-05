@@ -36,6 +36,23 @@ double mediana(vector<int> Balai)  {
     }
 }
 
+double skaiciuoti_galutini(Student& student, std::vector<int>& balai) {
+    if (balai.size() < 2) return 0.0;
+
+    int exam = balai.back();
+    balai.pop_back();
+
+    int suma = 0;
+    for (int b : balai) suma += b;
+
+    student.galutinisVid = ((suma / (double)balai.size()) * 0.4) + (exam * 0.6);
+
+    sort(balai.begin(), balai.end());
+    student.galutinisMed = mediana(balai);
+
+    return student.galutinisVid;
+}
+
 void ivedimas(vector<Student>& studentai, vector<vector<int>>& NamuDarbuBalai, int KiekisStudentu){
     
     if (KiekisStudentu == 0) return;
@@ -74,17 +91,7 @@ void ivedimas(vector<Student>& studentai, vector<vector<int>>& NamuDarbuBalai, i
         return;
     }
     
-    int exam = NamuDarbuBalai[i].back();
-    NamuDarbuBalai[i].pop_back();
-
-    for (int j = 0; j < NamuDarbuBalai[i].size(); ++j) {
-        suma += NamuDarbuBalai[i][j];
-    }
-
-    studentai[i].galutinisVid = ((suma / NamuDarbuBalai[i].size()) * 0.4) + (exam * 0.6);
-
-    sort(NamuDarbuBalai[i].begin(), NamuDarbuBalai[i].end());
-    studentai[i].galutinisMed= mediana(NamuDarbuBalai[i]);   
+    skaiciuoti_galutini(studentai[i], NamuDarbuBalai[i]); 
 }
 
 void meniu(vector<Student>& studentai, vector<vector<int>>& NamuDarbuBalai, int& KiekisStudentu){
@@ -157,6 +164,8 @@ void duomenys_is_failo(vector<Student>& studentai, vector<vector<int>>& NamuDarb
         int suma = 0;
         int balas;
 
+        studentai.emplace_back(v, p, 0.0, 0.0);
+
         while (ss >> balas) {
             NamuDarbuBalai[i].push_back(balas);
         }
@@ -166,18 +175,7 @@ void duomenys_is_failo(vector<Student>& studentai, vector<vector<int>>& NamuDarb
             continue;
         }
 
-        int exam = NamuDarbuBalai[i].back();
-        NamuDarbuBalai[i].pop_back();
-
-        for (int j = 0; j < NamuDarbuBalai[i].size(); ++j) {
-            suma += NamuDarbuBalai[i][j];
-        }
-
-        studentai.emplace_back(v, p, 0.0, 0.0);
-        studentai[i].galutinisVid = (((suma / NamuDarbuBalai[i].size()) * 0.4) + (exam * 0.6));
-        sort(NamuDarbuBalai[i].begin(), NamuDarbuBalai[i].end());
-        studentai[i].galutinisMed = mediana(NamuDarbuBalai[i]);
-
+        skaiciuoti_galutini(studentai[i], NamuDarbuBalai[i]);
         KiekisStudentu++;
     }
 

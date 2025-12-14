@@ -1,11 +1,15 @@
+
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 
 #include "student.h"
 #include <list>
+#include <vector>
+#include <string>
 
 bool operator<(const Student& a, const Student& b);
 
+// List dalis
 double mediana(std::list<int>& balai);
 double skaiciuoti_galutini(Student& s, std::list<int>& balai);
 void ivedimas(std::list<Student>& studentai, std::list<std::list<int>>& NamuDarbuBalai, int KiekisStudentu);
@@ -13,5 +17,14 @@ void duomenys_is_failo(std::list<Student>& studentai, std::list<std::list<int>>&
 void atsitiktiniai_pazymiai(std::list<Student>& studentai, std::list<std::list<int>>& NamuDarbuBalai, int KiekisStudentu);
 void rezultatas(const std::list<Student>& studentai);
 void kategorijos(const std::list<Student>& studentai, std::list<Student>& NeTokieProtingi, std::list<Student>& protingi);
+
+// Vector dalis
+double mediana(std::vector<int>& balai);
+double skaiciuoti_galutini(Student& s, std::vector<int>& balai);
+void ivedimas(std::vector<Student>& studentai, std::vector<std::vector<int>>& NamuDarbuBalai, int KiekisStudentu);
+void duomenys_is_failo(std::vector<Student>& studentai, std::vector<std::vector<int>>& NamuDarbuBalai, int& KiekisStudentu, const std::string& failoVardas);
+void atsitiktiniai_pazymiai(std::vector<Student>& studentai, std::vector<std::vector<int>>& NamuDarbuBalai, int KiekisStudentu);
+void rezultatas(const std::vector<Student>& studentai);
+void kategorijos(const std::vector<Student>& studentai, std::vector<Student>& NeTokieProtingi, std::vector<Student>& protingi);
 
 #endif

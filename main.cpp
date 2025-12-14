@@ -88,7 +88,7 @@ int main() {
                 cout << "Bendras laikas (List - 1 strategija): " << duration<double>(endTotal - startTotal).count() << " s\n";
             }
         }
-        else if (pasirinkimas == 5) {
+        else if (pasirinkimas == 5 || pasirinkimas == 9) {
             vector<string> files = {
                 "studentai10.txt", "studentai100.txt", "studentai1000.txt",
                 "studentai10000.txt", "studentai100000.txt"
@@ -105,7 +105,7 @@ int main() {
                 cout << "Bendras laikas (Vector - 1 strategija): " << duration<double>(endTotal - startTotal).count() << " s\n";
             }
         }
-        else if (pasirinkimas == 6) {
+        else if (pasirinkimas == 6 || pasirinkimas == 8) {
             vector<string> files = {
                 "studentai10.txt", "studentai100.txt", "studentai1000.txt",
                 "studentai10000.txt", "studentai100000.txt"
@@ -146,12 +146,6 @@ int main() {
                 auto endTotal = high_resolution_clock::now();
                 cout << "Bendras laikas (VECTOR - 2 strategija): "<< duration<double>(endTotal - startTotal).count() << " s\n";
             }
-        }
-        else if (pasirinkimas == 8) {
-            
-        }
-        else if (pasirinkimas == 9) {
-            
         }
         else if (pasirinkimas == 10) {
             rezultatas(studentai);

@@ -17,6 +17,7 @@ void duomenys_is_failo(std::list<Student>& studentai, std::list<std::list<int>>&
 void atsitiktiniai_pazymiai(std::list<Student>& studentai, std::list<std::list<int>>& NamuDarbuBalai, int KiekisStudentu);
 void rezultatas(const std::list<Student>& studentai);
 void kategorijos(const std::list<Student>& studentai, std::list<Student>& NeTokieProtingi, std::list<Student>& protingi);
+void kategorijos2(std::list<Student>& studentai, std::list<Student>& vargsiukai);
 
 // Vector dalis
 double mediana(std::vector<int>& balai);
@@ -26,5 +27,6 @@ void duomenys_is_failo(std::vector<Student>& studentai, std::vector<std::vector<
 void atsitiktiniai_pazymiai(std::vector<Student>& studentai, std::vector<std::vector<int>>& NamuDarbuBalai, int KiekisStudentu);
 void rezultatas(const std::vector<Student>& studentai);
 void kategorijos(const std::vector<Student>& studentai, std::vector<Student>& NeTokieProtingi, std::vector<Student>& protingi);
+void kategorijos2(std::vector<Student>& studentai, std::vector<Student>& vargsiukai);
 
 #endif

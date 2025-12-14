@@ -35,7 +35,9 @@ int main() {
              << "3 - Įvedami duomenys iš failo (LIST)\n"
              << "4 - Laiko testas \"1 Strategija\" - LIST\n"
              << "5 - Laiko testas \"1 Strategija\" - VECTOR\n"
-             << "6 - Spausdinti rezultatus (LIST)\n"
+             << "6 - Laiko testas \"2 Strategija\" - LIST\n"
+             << "7 - Laiko testas \"2 Strategija\" - VECTOR\n"
+             << "8 - Spausdinti rezultatus (LIST)\n"
              << "9 - Išeiti\n"
              << "Pasirinkimas: ";
         if (!(cin >> pasirinkimas)) return 0;
@@ -73,7 +75,7 @@ int main() {
                 "studentai10000.txt", "studentai100000.txt"
             }; 
             for (const auto& file : files) {
-                cout << "\n[Test LIST] Failas: " << file << "\n";
+                cout << "\n[Test LIST - 1 strategija] Failas: " << file << "\n";
                 list<Student> testStudentai;
                 list<list<int>> testBalai;
                 int testKiekis = 0;
@@ -81,9 +83,7 @@ int main() {
                 duomenys_is_failo(testStudentai, testBalai, testKiekis, file);
                 kategorijos(testStudentai, NeTokieProtingi, protingi);
                 auto endTotal = high_resolution_clock::now();
-                cout << "Bendras laikas (LIST): "
-                     << duration<double>(endTotal - startTotal).count()
-                     << " s\n";
+                cout << "Bendras laikas (List - 1 strategija): " << duration<double>(endTotal - startTotal).count() << " s\n";
             }
         }
         else if (pasirinkimas == 5) {
@@ -92,7 +92,7 @@ int main() {
                 "studentai10000.txt", "studentai100000.txt"
             };
             for (const auto& file : files) {
-                cout << "\n[Test VECTOR] Failas: " << file << "\n";
+                cout << "\n[Test Vector - 1 strategija] Failas: " << file << "\n";
                 vector<Student> testStudentai;
                 vector<vector<int>> testBalai;
                 int testKiekis = 0;
@@ -100,12 +100,52 @@ int main() {
                 duomenys_is_failo(testStudentai, testBalai, testKiekis, file);
                 kategorijos(testStudentai, NeTokieProtingiV, protingiV);
                 auto endTotal = high_resolution_clock::now();
-                cout << "Bendras laikas (VECTOR): "
-                     << duration<double>(endTotal - startTotal).count()
-                     << " s\n";
+                cout << "Bendras laikas (Vector - 1 strategija): " << duration<double>(endTotal - startTotal).count() << " s\n";
             }
         }
         else if (pasirinkimas == 6) {
+            vector<string> files = {
+                "studentai10.txt", "studentai100.txt", "studentai1000.txt",
+                "studentai10000.txt", "studentai100000.txt"
+            };
+            for (const auto& file : files) {
+                cout << "\n[Test LIST - 2 strategija] Failas: " << file << "\n";
+                list<Student> testStudentai;
+                list<list<int>> testBalai;
+                int testKiekis = 0;
+
+                auto startTotal = high_resolution_clock::now();
+                duomenys_is_failo(testStudentai, testBalai, testKiekis, file);
+
+                list<Student> vargsiukai;
+                kategorijos2(testStudentai, vargsiukai);
+
+                auto endTotal = high_resolution_clock::now();
+                cout << "Bendras laikas (LIST - 2 strategija): " << duration<double>(endTotal - startTotal).count() << " s\n";
+            }
+        }
+        else if (pasirinkimas == 7) {
+            vector<string> files = {
+                "studentai10.txt", "studentai100.txt", "studentai1000.txt",
+                "studentai10000.txt", "studentai100000.txt"
+            };
+            for (const auto& file : files) {
+                cout << "\n[Test VECTOR - 2 strategija] Failas: " << file << "\n";
+                vector<Student> testStudentai;
+                vector<vector<int>> testBalai;
+                int testKiekis = 0;
+
+                auto startTotal = high_resolution_clock::now();
+                duomenys_is_failo(testStudentai, testBalai, testKiekis, file);
+
+                vector<Student> vargsiukai;
+                kategorijos2(testStudentai, vargsiukai);
+
+                auto endTotal = high_resolution_clock::now();
+                cout << "Bendras laikas (VECTOR - 2 strategija): "<< duration<double>(endTotal - startTotal).count() << " s\n";
+            }
+        }
+        else if (pasirinkimas == 8) {
             rezultatas(studentai);
         }
         else if (pasirinkimas == 9) {

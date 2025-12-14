@@ -112,7 +112,7 @@ void duomenys_is_failo(vector<Student>& studentai,vector<vector<int>>& NamuDarbu
         KiekisStudentu++;
     }
     auto endRead = high_resolution_clock::now();
-    cout << "Failo nuskaitymo laikas (vector): "
+    cout << "Failo nuskaitymo laikas: "
          << duration<double>(endRead - startRead).count() << " s\n";
 }
 
@@ -145,8 +145,7 @@ void kategorijos(const vector<Student>& studentai, vector<Student>& NeTokieProti
         else NeTokieProtingi.push_back(s);
     }
     auto endSort = high_resolution_clock::now();
-    cout << "Rūšiavimo į kategorijas laikas (vector): "
-         << duration<double>(endSort - startSort).count() << " s\n";
+    cout << "Rūšiavimo į kategorijas laikas: " << duration<double>(endSort - startSort).count() << " s\n";
 
     auto startWrite = high_resolution_clock::now();
     ofstream outMaziau("maziau.txt");
@@ -175,8 +174,7 @@ void kategorijos(const vector<Student>& studentai, vector<Student>& NeTokieProti
     outMaziau.close();
 
     auto endWrite = high_resolution_clock::now();
-    cout << "Įrašymo į failus laikas (vector): "
-         << duration<double>(endWrite - startWrite).count() << " s\n";
+    cout << "Įrašymo į failus laikas: " << duration<double>(endWrite - startWrite).count() << " s\n";
 }
 
 void rezultatas(const vector<Student>& studentai) {
@@ -200,3 +198,48 @@ void rezultatas(const vector<Student>& studentai) {
              << setw(16) << left << s.galutinisMed << '\n';
     }
 }
+
+void kategorijos2(vector<Student>& studentai, vector<Student>& vargsiukai)
+{
+    const auto startSort = high_resolution_clock::now();
+    vargsiukai.clear();
+    vargsiukai.reserve(studentai.size());
+
+    for (auto it = studentai.begin(); it != studentai.end();) {
+        if (it->galutinisVid < 5.0) {
+            vargsiukai.push_back(std::move(*it));
+            it = studentai.erase(it); 
+        } else {
+            ++it; 
+        }
+    }
+
+    const auto endSort = high_resolution_clock::now();
+    cout << "2 strategija (VECTOR - iteracinis erase): skaidymo laikas: " << duration<double>(endSort - startSort).count() << " s\n";
+
+    const auto startWrite = high_resolution_clock::now();
+    ofstream OutMaziau("maziau.txt");
+    ofstream OutDaugiau("protingi.txt");
+
+    OutMaziau << "Pavardė Vardas Galutinis (Vid.) Galutinis (Med.)\n" << string(62, '-') << "\n";
+    for (const auto& s : vargsiukai) {
+        OutMaziau << left << setw(14) << s.pavarde
+            << setw(14) << s.vardas
+            << fixed << setprecision(2)
+            << setw(19) << s.galutinisVid
+            << setw(16) << s.galutinisMed << '\n';
+    }
+
+    OutDaugiau << "Pavardė Vardas Galutinis (Vid.) Galutinis (Med.)\n" << string(62, '-') << "\n";
+    for (const auto& s : studentai) {
+        OutDaugiau << left << setw(14) << s.pavarde
+            << setw(14) << s.vardas
+            << fixed << setprecision(2)
+            << setw(19) << s.galutinisVid
+            << setw(16) << s.galutinisMed << '\n';
+    }
+
+    auto endWrite = high_resolution_clock::now();
+    cout << "Įrašymo į failus laikas: " << duration<double>(endWrite - startWrite).count() << " s\n";
+}
+

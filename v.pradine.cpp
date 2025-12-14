@@ -238,3 +238,42 @@ void kategorijos(const list<Student>& studentai, list<Student>& NeTokieProtingi,
     cout << "Įrašymo į failus laikas: " << duration<double>(endWrite - startWrite).count() << " s\n";
 
 }
+
+void kategorijos2(std::list<Student>& studentai, std::list<Student>& vargsiukai) {
+    using namespace std::chrono;
+    auto startSort = high_resolution_clock::now();
+
+    vargsiukai.clear();
+
+    for (auto it = studentai.begin(); it != studentai.end(); ) {
+        auto cur = it++;
+        if (cur->galutinisVid < 5.0) {
+            vargsiukai.splice(vargsiukai.end(), studentai, cur);
+        }
+    }
+
+    auto endSort = high_resolution_clock::now();
+    cout << "Rūšiavimo į kategorijas laikas: " << duration<double>(endSort - startSort).count() << " s\n";
+
+    auto startWrite = high_resolution_clock::now();
+    ofstream OutMaziau("maziau.txt");
+    ofstream OutDaugiau("protingi.txt");
+    OutMaziau << "Pavardė Vardas Galutinis (Vid.) Galutinis (Med.)\n" << string(62,'-') << "\n";
+    for (const auto& s : vargsiukai){
+        OutMaziau << left << setw(14) << s.pavarde 
+            << setw(14) << s.vardas
+            << fixed << setprecision(2) 
+            << setw(19) << s.galutinisVid
+            << setw(16) << s.galutinisMed << '\n';
+        }
+    OutDaugiau << "Pavardė Vardas Galutinis (Vid.) Galutinis (Med.)\n" << string(62,'-') << "\n";
+    for (const auto& s : studentai){
+        OutDaugiau << left << setw(14) << s.pavarde 
+            <<setw(14) << s.vardas
+            << fixed << setprecision(2) 
+            << setw(19) << s.galutinisVid
+            << setw(16) << s.galutinisMed << '\n';
+        }
+    auto endWrite = high_resolution_clock::now();
+    cout << "Įrašymo į failus laikas: " << duration<double>(endWrite - startWrite).count() << " s\n";
+}

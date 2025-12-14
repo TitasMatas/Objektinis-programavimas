@@ -205,14 +205,13 @@ void kategorijos2(vector<Student>& studentai, vector<Student>& vargsiukai)
     vargsiukai.clear();
     vargsiukai.reserve(studentai.size());
 
-    for (auto it = studentai.begin(); it != studentai.end();) {
-        if (it->galutinisVid < 5.0) {
-            vargsiukai.push_back(std::move(*it));
-            it = studentai.erase(it); 
-        } else {
-            ++it; 
-        }
-    }
+    auto isProtingas = [](const Student& s) noexcept {
+        return s.galutinisVid >= 5.0;
+    };
+
+    auto mid = partition(studentai.begin(), studentai.end(), isProtingas);
+    move(mid, studentai.end(), back_inserter(vargsiukai));
+    studentai.erase(mid, studentai.end());
 
     const auto endSort = high_resolution_clock::now();
     cout << "2 strategija (VECTOR - iteracinis erase): skaidymo laikas: " << duration<double>(endSort - startSort).count() << " s\n";

@@ -37,8 +37,10 @@ int main() {
              << "5 - Laiko testas \"1 Strategija\" - VECTOR\n"
              << "6 - Laiko testas \"2 Strategija\" - LIST\n"
              << "7 - Laiko testas \"2 Strategija\" - VECTOR\n"
-             << "8 - Spausdinti rezultatus (LIST)\n"
-             << "9 - Išeiti\n"
+             << "8 - Laiko testas \"3 Strategija\" - LIST\n"
+             << "9 - Laiko testas \"3 Strategija\" - VECTOR\n"
+             << "10 - Spausdinti rezultatus (LIST)\n"
+             << "11 - Išeiti\n"
              << "Pasirinkimas: ";
         if (!(cin >> pasirinkimas)) return 0;
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
@@ -146,9 +148,15 @@ int main() {
             }
         }
         else if (pasirinkimas == 8) {
-            rezultatas(studentai);
+            
         }
         else if (pasirinkimas == 9) {
+            
+        }
+        else if (pasirinkimas == 10) {
+            rezultatas(studentai);
+        }
+        else if (pasirinkimas == 11) {
             break;
         }
         else {

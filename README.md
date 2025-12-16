@@ -39,14 +39,42 @@ Programa skirta:
   - `studentai10000.txt`
   - `studentai100000.txt`
 
-## Kaip kompiliuoti
+## Paleidimo instrukcija (su g++)
+
+### Kaip kompiliuoti
 ```bash
-g++ main.cpp functions.cpp -o programa.exe
+g++ -std=c++17 main.cpp v.pradine.cpp vector.cpp -o programa.exe
 ```
 
-## Kaip paleisti
+### Kaip paleisti
 ```bash
 ./programa.exe
+```
+## idiegimo instrukcija (su g++)
+
+### Variantas A: Make (Unix/Linux/macOS)
+- Įdiek g++ (pvz., `sudo apt install build-essential` arba `xcode-select --install` macOS).
+- Terminale:
+   ```bash
+   make        # sukompiliuoja 'programa'
+   make run    # paleidžia ./programa
+   make clean  # išvalo build artefaktus
+   ```
+
+### Variantas B: CMake (Windows/Linux/macOS)
+- Įdiek CMake (https://cmake.org) ir C++ kompiliatorių (MSVC arba MinGW Windows, gcc/clang Linux/macOS).
+- Terminale:
+  ```bash
+  mkdir -p build && cd build
+  cmake -DCMAKE_BUILD_TYPE=Release ..
+  cmake --build . --config Release
+  ```
+
+### Programos paleidimas
+```bash
+./programa                 # Linux/macOS
+.\Release\programa.exe     # Windows (MSVC)
+.\programa.exe             # Windows (MinGW)
 ```
 
 ## Spartos analizės rezultatai

@@ -42,15 +42,17 @@ Programa skirta:
 ## Paleidimo instrukcija (su g++)
 
 ### Kaip kompiliuoti
-```bash
-g++ -std=c++17 main.cpp v.pradine.cpp vector.cpp -o programa.exe
-```
+- Terminale:
+  ```bash
+  g++ -std=c++17 main.cpp v.pradine.cpp vector.cpp -o programa.exe
+  ```
 
 ### Kaip paleisti
-```bash
-./programa.exe
-```
-## idiegimo instrukcija (su g++)
+- Terminale:
+  ```bash
+  ./programa.exe
+  ```
+## idiegimo instrukcija
 
 ### Variantas A: Make (Unix/Linux/macOS)
 - Įdiek g++ (pvz., `sudo apt install build-essential` arba `xcode-select --install` macOS).
@@ -71,11 +73,12 @@ g++ -std=c++17 main.cpp v.pradine.cpp vector.cpp -o programa.exe
   ```
 
 ### Programos paleidimas
-```bash
-./programa                 # Linux/macOS
-.\Release\programa.exe     # Windows (MSVC)
-.\programa.exe             # Windows (MinGW)
-```
+- Terminale:
+  ```bash
+  ./programa                 # Linux/macOS
+  .\Release\programa.exe     # Windows (MSVC)
+  .\programa.exe             # Windows (MinGW)
+  ```
 
 ## Spartos analizės rezultatai
 

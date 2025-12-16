@@ -10,6 +10,17 @@ Programa skirta:
 - Išvesti rezultatus į failus
 - Atlikti spartos analizę su skirtingais duomenų kiekiais (List ir Vector strategijos)
 
+## Strategijos
+- `Strategija 1` – Paprastas skirstymas į kategorijas naudojant iteracinį erase metodą:
+  - Kiekvienas studentas tikrinamas ir perkeltas į atitinkamą vektorių arba sąrašą. 
+  - Trūkumas: daug erase operacijų → gali būti O(n²) blogiausiu atveju.
+- `Strategija 2` – Optimizuotas skirstymas naudojant std::partition:
+  - Vienu perėjimu padalina duomenis į dvi grupes.
+  - Naudojamas move ir vienkartinis erase → O(n) laikas.
+- `Strategija 3` – Optimaliausias algoritmas (naudojant std::partition_copy arba copy_if):
+  - Sukuria dvi atskiras kolekcijas vienu arba dviem perėjimais.
+  - Mažiausiai realokacijų, geras našumas dideliems duomenų kiekiams.
+
 ## Releases
 - **v0.1** – Bazinė versija: rankinis įvedimas, atsitiktiniai pažymiai, lentelės spausdinimas
 - **v0.2** – Pridėtas failų nuskaitymas, kategorijų skirstymas, spartos analizė (List)
@@ -44,47 +55,68 @@ g++ main.cpp functions.cpp -o programa.exe
 
 | Failas | Nuskaitymas (s) | Rūšiavimas (s) | Įrašymas (s) | Bendras (s) |
 |--------|-----------------|---------------|-------------|------------|
-| studentai10.txt | 0.0040244 | 0.0187402 | 0.0034467 | 0.0300635 |
-| studentai100.txt | 0.0019569 | 9.97e-05 | 0.0105004 | 0.0170775 |
-| studentai1000.txt | 0.0105721 | 0.0003927 | 0.029581 | 0.0435474 |
-| studentai10000.txt | 0.111251 | 0.0027431 | 0.198954 | 0.315839 |
-| studentai100000.txt | 1.22648 | 0.0417616 | 2.07247 | 3.3437 |
+| studentai10.txt | 0.0004683 | 0.000004 | 0.002750 | 0.005685 |
+| studentai100.txt | 0.001077 | 0.000033 | 0.003208 | 0.006923 |
+| studentai1000.txt | 0.008084 | 0.000271 | 0.025702 | 0.038109 |
+| studentai10000.txt | 0.079605 | 0.002673 | 0.159430 | 0.250481 |
+| studentai100000.txt | 0.980284 | 0.025490 | 1.685742 | 2.701157 |
 
 ### Vector - 1 strategija
 
 | Failas | Nuskaitymas (s) | Rūšiavimas (s) | Įrašymas (s) | Bendras (s) |
 |--------|-----------------|---------------|-------------|------------|
-| studentai10.txt | 0.0004625 | 0.0036824 | 0.0044514 | 0.0145581 |
-| studentai100.txt | 0.0009774 | 8.1e-06 | 0.0036543 | 0.0080524 |
-| studentai1000.txt | 0.0045498 | 0.0001253 | 0.0127471 | 0.0203829 |
-| studentai10000.txt | 0.0450281 | 0.0006673 | 0.111536 | 0.163732 |
-| studentai100000.txt | 0.686533 | 0.0177833 | 1.32892 | 2.03908 |
+| studentai10.txt | 0.000277 | 0.000006 | 0.002759 | 0.005732 |
+| studentai100.txt | 0.000875 | 0.000021 | 0.003380 | 0.007000 |
+| studentai1000.txt | 0.005006 | 0.000096 | 0.011492 | 0.020073 |
+| studentai10000.txt | 0.043560 | 0.001785 | 0.104525 | 0.156593 |
+| studentai100000.txt | 0.589808 | 0.008538 | 1.041460 | 1.647818 |
 
 ### LIST - 2 strategija
 
 | Failas | Nuskaitymas (s) | Rūšiavimas (s) | Įrašymas (s) | Bendras (s) |
 |--------|-----------------|---------------|-------------|------------|
-| studentai10.txt | 0.0002597 | 1.1e-06 | 0.0023858 | 0.0063553 |
-| studentai100.txt | 0.0009697 | 6.5e-06 | 0.0020115 | 0.0065847 |
-| studentai1000.txt | 0.0081081 | 6.15e-05 | 0.0125882 | 0.0239601 |
-| studentai10000.txt | 0.0761137 | 0.0004438 | 0.105113 | 0.188598 |
-| studentai100000.txt | 0.888503 | 0.0038834 | 0.946277 | 1.84691 |
+| studentai10.txt | 0.000308 | 0.000001 | 0.002355 | 0.007255 |
+| studentai100.txt | 0.000942 | 0.000006 | 0.002077 | 0.006302 |
+| studentai1000.txt | 0.012570 | 0.000076 | 0.018926 | 0.038212 |
+| studentai10000.txt | 0.111792 | 0.000611 | 0.122498 | 0.238394 |
+| studentai100000.txt | 1.043421 | 0.011668 | 1.365263 | 2.428025 |
 
 ### VECTOR - 2 strategija
 
 | Failas | Nuskaitymas (s) | Rūšiavimas (s) | Įrašymas (s) | Bendras (s) |
 |--------|-----------------|---------------|-------------|------------|
-| studentai10.txt | 0.0003272 | skaidymo laikas: 4.5e-06 | 0.0023801 | 0.0067653 |
-| studentai100.txt | 0.0007489 | skaidymo laikas: 1.76e-05 | 0.0018791 | 0.0062425 |
-| studentai1000.txt | 0.0069607 | skaidymo laikas: 0.0001581 | 0.0119115 | 0.0231657 |
-| studentai10000.txt | 0.0415528 | skaidymo laikas: 0.0019942 | 0.099897 | 0.151998 |
-| studentai100000.txt | 0.514775 | skaidymo laikas: 0.011704 | 0.941129 | 1.47655 |
+| studentai10.txt | 0.000285 | 0.000015 | 0.002364 | 0.006179 |
+| studentai100.txt | 0.000696 | 0.000034 | 0.002038 | 0.006295 |
+| studentai1000.txt | 0.006659 | 0.000215 | 0.014942 | 0.027365 |
+| studentai10000.txt | 0.052394 | 0.001360 | 0.110564 | 0.169590 |
+| studentai100000.txt | 0.437229 | 0.011256 | 1.008927 | 1.448204 |
+
+### LIST - 3 strategija
+
+| Failas | Nuskaitymas (s) | Rūšiavimas (s) | Įrašymas (s) | Bendras (s) |
+|--------|-----------------|---------------|-------------|------------|
+| studentai10.txt | 0.000303 | 0.000014 | 0.003095 | 0.009514 |
+| studentai100.txt | 0.001567 | 0.000034 | 0.004046 | 0.011619 |
+| studentai1000.txt | 0.008382 | 0.000176 | 0.017993 | 0.030193 |
+| studentai10000.txt | 0.074557 | 0.001841 | 0.129775 | 0.209747 |
+| studentai100000.txt | 0.612980 | 0.008422 | 1.176789 | 1.805983 |
+
+### Vector - 3 strategija
+
+| Failas | Nuskaitymas (s) | Rūšiavimas (s) | Įrašymas (s) | Bendras (s) |
+|--------|-----------------|---------------|-------------|------------|
+| studentai10.txt | 0.000246 | 0.000008 | 0.002980 | 0.006848 |
+| studentai100.txt | 0.002074 | 0.000061 | 0.012370 | 0.072213 |
+| studentai1000.txt | 0.012862 | 0.000391 | 0.018819 | 0.037375 |
+| studentai10000.txt | 0.082182 | 0.002688 | 0.179310 | 0.268398 |
+| studentai100000.txt | 1.443004 | 0.036372 | 1.581471 | 3.066483 |
 
 ## Pastabos
 - Laikas didėja linijiškai su duomenų kiekiu – algoritmai O(n).
 - Didžiausią laiko dalį sudaro failų rašymas (I/O), ne algoritmas.
 - Vector greitesnis už List dėl nuoseklios atminties ir mažesnių realokacijų.
-- 2 strategija (partition) efektyvesnė už 1 strategiją (erase ciklas).
+- 3 strategija yra greičiausia ir efektyviausia su LIST.
+- 2 strategija yra greičiausia ir efektyviausia su Vector.
 - Nedideli svyravimai tarp paleidimų yra normalūs dėl OS, cache, I/O.
 
 ## Testavimo sistemos parametrai
